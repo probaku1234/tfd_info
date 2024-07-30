@@ -15,6 +15,7 @@ import { Module, ModuleStat } from "../types";
 
 interface ModuleProps {
   module: Module;
+  level?: number;
 }
 
 const tierColorMap = new Map<string, string>();
@@ -50,11 +51,12 @@ classImageNameMap.set("충격탄", "module_ammo_b.png");
 classImageNameMap.set("특수탄", "module_ammo_c.png");
 classImageNameMap.set("고위력탄", "module_ammo_d.png");
 
-const ModuleComponent: React.FC<ModuleProps> = ({ module }) => {
+const ModuleComponent: React.FC<ModuleProps> = ({ module, level=0 }) => {
   return (
     <Box
       key={module.module_id}
       bg="gray.700"
+      border="1px solid"
       borderRadius="md"
       overflow="hidden"
       boxShadow="md"
@@ -64,6 +66,7 @@ const ModuleComponent: React.FC<ModuleProps> = ({ module }) => {
       alignItems="center"
       position="relative"
       cursor={"pointer"}
+      _hover={{ borderColor: "red" }}
     >
       <Box
         textColor="white"
@@ -82,7 +85,7 @@ const ModuleComponent: React.FC<ModuleProps> = ({ module }) => {
           width="24px"
           height="24px"
         />
-        <Text fontSize="lg">{module.module_stat[0].module_capacity}</Text>
+        <Text fontSize="lg">{module.module_stat[level].module_capacity}</Text>
       </Box>
       <Box
         bg={tierColorMap.get(module.module_tier)}

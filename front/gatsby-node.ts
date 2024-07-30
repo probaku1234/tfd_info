@@ -88,3 +88,36 @@ export const sourceNodes: GatsbyNode["sourceNodes"] = async ({ actions }) => {
     console.error("Error fetching data:", error);
   }
 };
+
+interface ModuleIds {
+  allModule: {
+    nodes: Module[];
+  };
+}
+
+export const createPages: GatsbyNode["createPages"] = async ({
+  graphql,
+  actions,
+}) => {
+  const { createPage } = actions;
+
+  const { data } = await graphql(`
+    {
+      allModule {
+        nodes {
+          module_id
+        }
+      }
+    }
+  `);
+
+  (data as ModuleIds).allModule.nodes.forEach((node: { module_id: any }) => {
+    createPage({
+      path: `/module/${node.module_id}`,
+      component: path.resolve("./src/templates/module_detail.tsx"),
+      context: {
+        module_id: node.module_id,
+      },
+    });
+  });
+};
