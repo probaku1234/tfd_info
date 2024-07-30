@@ -18,6 +18,9 @@ const Header = () => {
           <Link as={GatsbyLink} to="/reward_rotation" mx={2}>
             난이도 보상 로테이션
           </Link>
+          <Link as={GatsbyLink} to="/modules" mx={2}>
+            모듈
+          </Link>
           {/* <Link as={GatsbyLink} to="/contact" mx={2}>
             Contact
           </Link> */}

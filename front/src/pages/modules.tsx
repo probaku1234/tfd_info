@@ -15,7 +15,7 @@ import {
 import { SearchIcon } from "@chakra-ui/icons";
 import { debounce } from "lodash";
 import { SEO } from "../components/seo";
-import { graphql, PageProps, navigate } from "gatsby";
+import { graphql, PageProps, navigate, Link } from "gatsby";
 import { Module, ModuleStat } from "../types";
 import ModuleComponent from "../components/module";
 import { useLocation } from "@reach/router";
@@ -60,9 +60,7 @@ const ModulesPage: React.FC<ModulesPageProps> = ({ data }) => {
   const [searchKeyword, setSearchKeyword] = useState<string | null>(
     searchParams.get("searchKeyword") || null
   );
-  const [tier, setTier] = useState<string>(
-    searchParams.get("tier") || "all"
-  );
+  const [tier, setTier] = useState<string>(searchParams.get("tier") || "all");
   const [moduleClass, setModuleClass] = useState<string | null>(
     searchParams.get("moduleClass") || null
   );
@@ -148,7 +146,7 @@ const ModulesPage: React.FC<ModulesPageProps> = ({ data }) => {
           <HStack spacing={4} w="100%" justify="space-between">
             <Input
               placeholder="Search by stats or name"
-              defaultValue={searchKeyword || ''}
+              defaultValue={searchKeyword || ""}
               bg="gray.700"
               border="none"
               color="white"
@@ -161,11 +159,19 @@ const ModulesPage: React.FC<ModulesPageProps> = ({ data }) => {
               border="none"
               color="white"
             >
-              <option value={'all'}>전체</option>
-              <option style={{ color: "#2895bb" }} value={'일반'}>일반</option>
-              <option style={{ color: "#864ab7" }} value={'희귀'}>희귀</option>
-              <option style={{ color: "#bf9138" }} value={'궁극'}>궁극</option>
-              <option style={{ color: "#b1543f" }} value={'초월'}>초월</option>
+              <option value={"all"}>전체</option>
+              <option style={{ color: "#2895bb" }} value={"일반"}>
+                일반
+              </option>
+              <option style={{ color: "#864ab7" }} value={"희귀"}>
+                희귀
+              </option>
+              <option style={{ color: "#bf9138" }} value={"궁극"}>
+                궁극
+              </option>
+              <option style={{ color: "#b1543f" }} value={"초월"}>
+                초월
+              </option>
               {/* 추가 옵션들 */}
             </Select>
             <HStack spacing={2}>
@@ -246,7 +252,9 @@ const ModulesPage: React.FC<ModulesPageProps> = ({ data }) => {
 
         <SimpleGrid columns={{ sm: 1, md: 2, lg: 3, xl: 4 }} spacing={5}>
           {filteredModules.map((module) => (
-            <ModuleComponent module={module} />
+            <Link to={`/module/${module.module_id}`}>
+              <ModuleComponent module={module} />
+            </Link>
           ))}
         </SimpleGrid>
       </Box>
