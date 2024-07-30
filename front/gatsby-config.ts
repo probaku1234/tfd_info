@@ -1,0 +1,61 @@
+import type { GatsbyConfig } from "gatsby";
+import * as dotenv from 'dotenv'
+import path from 'path';
+dotenv.config({ path: __dirname + `/.env.${process.env.NODE_ENV}` })
+
+const gatsbyRequiredRules = path.join(
+  process.cwd(),
+  "node_modules",
+  "gatsby",
+  "dist",
+  "utils",
+  "eslint-rules"
+);
+
+const config: GatsbyConfig = {
+  siteMetadata: {
+    title: "TFD Info",
+    description: "퍼스트 디센던트 유저 계승자, 다음 보상 로테이션, 모듈등 여러 정보들을 확인할 수 있습니다.",
+    image: '/favicon-32x32.png',
+    siteUrl: `https://www.yourdomain.tld`,
+  },
+  // More easily incorporate content into your pages through automatic TypeScript type generation and better GraphQL IntelliSense.
+  // If you use VSCode you can also use the GraphQL plugin
+  // Learn more at: https://gatsby.dev/graphql-typegen
+  graphqlTypegen: true,
+  plugins: [
+    {
+      resolve: 'gatsby-plugin-manifest',
+      options: {
+        "icon": "src/images/favicon-32x32.png"
+      }
+    },
+    {
+      resolve: '@chakra-ui/gatsby-plugin',
+      options: {
+        /**
+         * @property {boolean} [resetCSS=true]
+         * if false, this plugin will not use `<CSSReset />
+         */
+        resetCSS: true,
+        /**
+         * @property {number} [portalZIndex=undefined]
+         * The z-index to apply to all portal nodes. This is useful
+         * if your app uses a lot z-index to position elements.
+         */
+        portalZIndex: undefined,
+      },
+    },
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `data`,
+        path: path.join(__dirname, 'data'),
+      },
+    },
+    `gatsby-transformer-json`,
+    'gatsby-plugin-sitemap',
+  ]
+};
+
+export default config;
