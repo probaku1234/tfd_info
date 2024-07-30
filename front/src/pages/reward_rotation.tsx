@@ -16,6 +16,7 @@ import {
 import { useLocation } from "@reach/router";
 import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
 import { SEO } from "../components/seo";
+import "./reward_rotation.css";
 
 const initialRotationStartDate = DateTime.fromMillis(1718694000000);
 const totalRotations = 20;
@@ -97,19 +98,19 @@ const RewardRotationPage = () => {
   const [selectedMap, setSelectedMap] = useState<string | null>(
     searchParams.get("map") || "all"
   );
-  const [sortBy, setSortBy] = useState<string | null>(
+  const [sortBy, setSortBy] = useState<string>(
     searchParams.get("sortBy") || "reward_type"
   );
-  const [rewardType, setRewardType] = useState<string | null>(
+  const [rewardType, setRewardType] = useState<string>(
     searchParams.get("rewardType") || "all"
   );
-  const [reactorElementType, setReactorElementType] = useState<string | null>(
+  const [reactorElementType, setReactorElementType] = useState<string>(
     searchParams.get("reactorElementType") || "all"
   );
-  const [weaponRoundsType, setWeaponRoundsType] = useState<string | null>(
+  const [weaponRoundsType, setWeaponRoundsType] = useState<string>(
     searchParams.get("weaponRoundsType") || "all"
   );
-  const [archeType, setArcheType] = useState<string | null>(
+  const [archeType, setArcheType] = useState<string>(
     searchParams.get("archeType") || "all"
   );
   const [timeRemaining, setTimeRemaining] = useState<string>("");
@@ -279,7 +280,7 @@ const RewardRotationPage = () => {
           </Box>
           <HStack spacing={4} width="100%">
             <Select
-              defaultValue="reward_type"
+              defaultValue={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
               textColor="black"
             >
@@ -288,7 +289,7 @@ const RewardRotationPage = () => {
             </Select>
 
             <Select
-              defaultValue="all"
+              defaultValue={weaponRoundsType}
               onChange={(e) => setWeaponRoundsType(e.target.value)}
               textColor="black"
             >
@@ -300,7 +301,7 @@ const RewardRotationPage = () => {
             </Select>
 
             <Select
-              defaultValue="all"
+              defaultValue={reactorElementType}
               onChange={(e) => setReactorElementType(e.target.value)}
               textColor="black"
             >
@@ -313,7 +314,7 @@ const RewardRotationPage = () => {
             </Select>
 
             <Select
-              defaultValue="all"
+              defaultValue={archeType}
               onChange={(e) => setArcheType(e.target.value)}
               textColor="black"
             >
@@ -325,7 +326,7 @@ const RewardRotationPage = () => {
             </Select>
 
             <Select
-              defaultValue="all"
+              defaultValue={rewardType}
               onChange={(e) => setRewardType(e.target.value)}
               textColor="black"
             >
