@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 // import { navigate } from 'gatsby';
-import { navigate } from '@reach/router';
-import Layout from '../components/layout';
-import { Box, Heading, Text, Input, Button, Flex } from '@chakra-ui/react';
+import { navigate } from "@reach/router";
+import Layout from "../components/layout";
+import { Box, Heading, Text, Input, Button, Flex } from "@chakra-ui/react";
+import { SEO } from "../components/seo";
 
 const IndexPage = () => {
-  const [userId, setUserId] = useState('');
+  const [userId, setUserId] = useState("");
 
   const handleSearch = (event: React.FormEvent) => {
     event.preventDefault();
@@ -21,8 +22,10 @@ const IndexPage = () => {
         <Heading as="h1" size="2xl" mb={4}>
           Welcome to My Gatsby Site
         </Heading>
-        <Text fontSize="xl" mb={4}>This is the homepage.</Text>
-        <Box as="form" onSubmit={handleSearch}>
+        <Text fontSize="xl" mb={4}>
+          This is the homepage.
+        </Text>
+        {/* <Box as="form" onSubmit={handleSearch}>
           <Flex justify="center">
             <Input
               placeholder="Enter user ID"
@@ -31,12 +34,16 @@ const IndexPage = () => {
               width="300px"
               mr={2}
             />
-            <Button type="submit" colorScheme="teal">Search</Button>
+            <Button type="submit" colorScheme="teal">
+              Search
+            </Button>
           </Flex>
-        </Box>
+        </Box> */}
       </Box>
     </Layout>
   );
 };
 
 export default IndexPage;
+
+export const Head = () => <SEO />;

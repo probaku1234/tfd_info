@@ -15,6 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { useLocation } from "@reach/router";
 import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
+import { SEO } from "../components/seo";
 
 const initialRotationStartDate = DateTime.fromMillis(1718694000000);
 const totalRotations = 20;
@@ -366,3 +367,5 @@ const RewardRotationPage = () => {
 };
 
 export default RewardRotationPage;
+
+export const Head = () => <SEO title="난이도 보상 로테이션" description="주간 난이도 보상 로테이션을 확인할 수 있습니다."/>;

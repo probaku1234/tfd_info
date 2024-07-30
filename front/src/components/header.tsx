@@ -12,9 +12,9 @@ const Header = () => {
           </Link>
         </Box>
         <Flex flex="1" justify="center">
-          <Link as={GatsbyLink} to="/" mx={2}>
+          {/* <Link as={GatsbyLink} to="/" mx={2}>
             계승자 정보 조회
-          </Link>
+          </Link> */}
           <Link as={GatsbyLink} to="/reward_rotation" mx={2}>
             난이도 보상 로테이션
           </Link>
