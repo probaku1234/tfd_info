@@ -2,71 +2,7 @@ import axios from "axios";
 import fs from "fs";
 import path from "path";
 import { GatsbyNode } from "gatsby";
-
-// Define TypeScript interfaces for the data
-interface StatDetail {
-  stat_type: string;
-  stat_value: number;
-}
-
-interface DescendantStat {
-  level: number;
-  stat_detail: StatDetail[];
-}
-
-interface DescendantSkill {
-  skill_type: string;
-  skill_name: string;
-  element_type: string;
-  arche_type: string;
-  skill_image_url: string;
-  skill_description: string;
-}
-
-interface Descendant {
-  descendant_id: string;
-  descendant_name: string;
-  descendant_image_url: string;
-  descendant_stat: DescendantStat[];
-  descendant_skill: DescendantSkill[];
-}
-
-interface ModuleStat {
-  level: number;
-  module_capacity: number;
-  value: string;
-}
-
-interface Module {
-  module_name: string;
-  module_id: string;
-  image_url: string;
-  module_type: string | null;
-  module_tier: string;
-  module_socket_type: string;
-  module_class: string;
-  module_stat: ModuleStat[];
-}
-
-interface Reward {
-  rotation: number;
-  reward_type: string;
-  reactor_element_type: string;
-  weapon_rounds_type: string;
-  arche_type: string;
-}
-
-interface BattleZone {
-  battle_zone_id: string;
-  battle_zone_name: string;
-  reward: Reward[];
-}
-
-interface Map {
-  map_id: string;
-  map_name: string;
-  battle_zone: BattleZone[];
-}
+import { Descendant, MapData, Module } from "./src/types";
 
 // Define the Gatsby sourceNodes API
 export const sourceNodes: GatsbyNode["sourceNodes"] = async ({ actions }) => {
@@ -128,7 +64,7 @@ export const sourceNodes: GatsbyNode["sourceNodes"] = async ({ actions }) => {
     });
 
     // Fetch and process reward data
-    const rewardResponse = await axios.get<Map[]>(rewardUrl);
+    const rewardResponse = await axios.get<MapData[]>(rewardUrl);
     const rewards = rewardResponse.data;
 
     // Write reward data to a file (optional)
