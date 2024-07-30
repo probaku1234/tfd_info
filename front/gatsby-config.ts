@@ -1,7 +1,7 @@
 import type { GatsbyConfig } from "gatsby";
-import * as dotenv from 'dotenv'
-import path from 'path';
-dotenv.config({ path: __dirname + `/.env.${process.env.NODE_ENV}` })
+import * as dotenv from "dotenv";
+import path from "path";
+dotenv.config({ path: __dirname + `/.env.${process.env.NODE_ENV}` });
 
 const gatsbyRequiredRules = path.join(
   process.cwd(),
@@ -15,9 +15,10 @@ const gatsbyRequiredRules = path.join(
 const config: GatsbyConfig = {
   siteMetadata: {
     title: "TFD Info",
-    description: "퍼스트 디센던트 유저 계승자, 다음 보상 로테이션, 모듈등 여러 정보들을 확인할 수 있습니다.",
-    image: '/favicon-32x32.png',
-    siteUrl: `https://www.yourdomain.tld`,
+    description:
+      "퍼스트 디센던트 유저 계승자, 다음 보상 로테이션, 모듈등 여러 정보들을 확인할 수 있습니다.",
+    image: "/favicon-32x32.png",
+    siteUrl: `https://tfd-info.vercel.app/`,
   },
   // More easily incorporate content into your pages through automatic TypeScript type generation and better GraphQL IntelliSense.
   // If you use VSCode you can also use the GraphQL plugin
@@ -25,13 +26,13 @@ const config: GatsbyConfig = {
   graphqlTypegen: true,
   plugins: [
     {
-      resolve: 'gatsby-plugin-manifest',
+      resolve: "gatsby-plugin-manifest",
       options: {
-        "icon": "src/images/favicon-32x32.png"
-      }
+        icon: "src/images/favicon-32x32.png",
+      },
     },
     {
-      resolve: '@chakra-ui/gatsby-plugin',
+      resolve: "@chakra-ui/gatsby-plugin",
       options: {
         /**
          * @property {boolean} [resetCSS=true]
@@ -50,12 +51,12 @@ const config: GatsbyConfig = {
       resolve: `gatsby-source-filesystem`,
       options: {
         name: `data`,
-        path: path.join(__dirname, 'data'),
+        path: path.join(__dirname, "data"),
       },
     },
     `gatsby-transformer-json`,
-    'gatsby-plugin-sitemap',
-  ]
+    "gatsby-plugin-sitemap",
+  ],
 };
 
 export default config;
