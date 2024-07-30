@@ -62,7 +62,7 @@ const ModuleDetail: React.FC<ModuleDetailProps> = ({ data }) => {
               onClick={() => handleArrowClick(true)}
               mr={10}
             />
-            <ModuleComponent module={module} />
+            <ModuleComponent module={module} level={level}/>
             <ArrowRightIcon
               width={"10%"}
               height={"10%"}
