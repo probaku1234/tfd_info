@@ -12,6 +12,8 @@ import {
   HStack,
   SimpleGrid,
   Button,
+  Divider,
+  Image,
 } from "@chakra-ui/react";
 import { useLocation } from "@reach/router";
 import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
@@ -65,6 +67,49 @@ const calculateDurationBasedOnOffset = (offset: number) => {
     currentDurationEnd.plus({ weeks: 1 * offset }),
   ];
 };
+
+function getRewardInfoByType(reward: any) {
+  if (reward.reward_type === "반응로") {
+    return (
+      <>
+        <HStack>
+          <Image
+            src={`/images/${rewardTypeNameMap.get(
+              reward.reward_type as string
+            )}`}
+            alt={reward.reward_type as string}
+            width="60px"
+            height="60px"
+          />
+          <Divider orientation='vertical' />
+          <VStack>
+            <Text>{reward.reactor_element_type}</Text>
+            <Text>{reward.weapon_rounds_type}</Text>
+            <Text>{reward.arche_type}</Text>
+          </VStack>
+        </HStack>
+      </>
+    );
+  } else {
+    return (
+      <Box justifyContent={"center"} alignItems={"center"} display={'flex'} height={'60%'}>
+        <Image
+          src={`/images/${rewardTypeNameMap.get(reward.reward_type as string)}`}
+          alt={reward.reward_type as string}
+          width="60px"
+          height="60px"
+        />
+      </Box>
+    );
+  }
+}
+
+const rewardTypeNameMap = new Map<string, string>();
+rewardTypeNameMap.set("반응로", "reactor.png");
+rewardTypeNameMap.set("메모리", "memory.png");
+rewardTypeNameMap.set("보조 전원", "power.png");
+rewardTypeNameMap.set("센서", "sensor.png");
+rewardTypeNameMap.set("처리 장치", "processor.png");
 
 const RewardRotationPage = () => {
   const currentRotation = calculateRotationNumber(DateTime.local());
@@ -334,7 +379,7 @@ const RewardRotationPage = () => {
               <option value="보조전원">보조전원</option>
               <option value="센서">센서</option>
               <option value="메모리">메모리</option>
-              <option value="처리장치">처리장치</option>
+              <option value="처리 장치">처리 장치</option>
               <option value="반응로">반응로</option>
             </Select>
           </HStack>
@@ -346,17 +391,17 @@ const RewardRotationPage = () => {
               filteredRewards.map((reward: any, index: number) => (
                 <Box
                   key={index}
-                  p={4}
+                  p={2}
                   borderWidth={1}
                   borderRadius="md"
                   textAlign="center"
                 >
-                  <Text>{reward.map_name}</Text>
-                  <Text>{reward.battle_zone_name}</Text>
-                  <Text>{reward.reward_type}</Text>
-                  <Text>{reward.reactor_element_type}</Text>
-                  <Text>{reward.weapon_rounds_type}</Text>
-                  <Text>{reward.arche_type}</Text>
+                  <Box>
+                    <Heading size="lg">{reward.map_name}</Heading>
+                    <Heading size="md">{reward.battle_zone_name}</Heading>
+                  </Box>
+                  <Divider />
+                  {getRewardInfoByType(reward)}
                 </Box>
               ))
             )}
@@ -369,4 +414,9 @@ const RewardRotationPage = () => {
 
 export default RewardRotationPage;
 
-export const Head = () => <SEO title="난이도 보상 로테이션" description="주간 난이도 보상 로테이션을 확인할 수 있습니다."/>;
+export const Head = () => (
+  <SEO
+    title="난이도 보상 로테이션"
+    description="주간 난이도 보상 로테이션을 확인할 수 있습니다."
+  />
+);
