@@ -252,7 +252,7 @@ const ModulesPage: React.FC<ModulesPageProps> = ({ data }) => {
 
         <SimpleGrid columns={{ sm: 1, md: 2, lg: 3, xl: 4 }} spacing={5}>
           {filteredModules.map((module) => (
-            <Link to={`/module/${module.module_id}`}>
+            <Link to={`/module/${module.module_id}`} key={module.module_id}>
               <ModuleComponent module={module} />
             </Link>
           ))}

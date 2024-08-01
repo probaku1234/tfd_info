@@ -10,12 +10,15 @@ import {
   VStack,
   HStack,
   IconButton,
+  Tooltip,
 } from "@chakra-ui/react";
 import { Module, ModuleStat } from "../types";
 
 interface ModuleProps {
   module: Module;
   level?: number;
+  showLevelBar?: boolean;
+  showTooltip?: boolean;
 }
 
 const tierColorMap = new Map<string, string>();
@@ -51,7 +54,39 @@ classImageNameMap.set("충격탄", "module_ammo_b.png");
 classImageNameMap.set("특수탄", "module_ammo_c.png");
 classImageNameMap.set("고위력탄", "module_ammo_d.png");
 
-const ModuleComponent: React.FC<ModuleProps> = ({ module, level=0 }) => {
+const ModuleComponent: React.FC<ModuleProps> = ({
+  module,
+  level = 0,
+  showLevelBar = false,
+  showTooltip = false,
+}) => {
+  const enchantLevelBar = () => {
+    const maxLevel = module.module_stat.length-1;
+    const enchant = [];
+
+    for (let i = 0; i < maxLevel - level; i++) {
+      enchant.push("empty");
+    }
+    for (let i = 0; i < level; i++) {
+      enchant.push("full");
+    }
+    console.log(enchant);
+    return (
+      <>
+        {enchant.map((value) => (
+          <Box
+            bg={value === "empty" ? "#334155" : "#d1b700"}
+            border="1px solid #000"
+            borderRadius={"3px"}
+            width={"20px"}
+            height={"6px"}
+            visibility={showLevelBar ? "visible" : "hidden"}
+          ></Box>
+        ))}
+      </>
+    );
+  };
+
   return (
     <Box
       key={module.module_id}
@@ -87,20 +122,27 @@ const ModuleComponent: React.FC<ModuleProps> = ({ module, level=0 }) => {
         />
         <Text fontSize="lg">{module.module_stat[level].module_capacity}</Text>
       </Box>
-      <Box
-        bg={tierColorMap.get(module.module_tier)}
-        border="2px solid #000"
-        borderRadius="5px"
-        mb={1}
-      >
-        <Image
-          src={module.image_url}
-          alt={module.module_name}
-          boxSize="100px"
-          mb={3}
-        />
-      </Box>
-
+      <HStack alignItems={"flex-end"} spacing={1}>
+        <Box display={"flex"} flexDirection={"column"}>
+          {enchantLevelBar()}
+        </Box>
+        <Box
+          bg={tierColorMap.get(module.module_tier)}
+          border="2px solid #000"
+          borderRadius="5px"
+          mb={1}
+        >
+          <Tooltip label={module.module_stat[level].value} isDisabled={!showTooltip}>
+            <Image
+              src={module.image_url}
+              alt={module.module_name}
+              boxSize="100px"
+              mb={3}
+            />
+          </Tooltip>
+        </Box>
+        <Box visibility={"hidden"} border="1px solid #000" width={"20px"}></Box>
+      </HStack>
       <Text fontSize="md" fontWeight="bold" color="white" mb={1}>
         {module.module_name}
       </Text>
