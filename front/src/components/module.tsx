@@ -1,18 +1,7 @@
 import React from "react";
-import {
-  Box,
-  Image,
-  Text,
-  SimpleGrid,
-  Badge,
-  Input,
-  Select,
-  VStack,
-  HStack,
-  IconButton,
-  Tooltip,
-} from "@chakra-ui/react";
-import { Module, ModuleStat } from "../types";
+import { Box, Image, Text, HStack, Tooltip } from "@chakra-ui/react";
+import { Module } from "../types";
+import { navigate } from "gatsby";
 
 interface ModuleProps {
   module: Module;
@@ -61,7 +50,7 @@ const ModuleComponent: React.FC<ModuleProps> = ({
   showTooltip = false,
 }) => {
   const enchantLevelBar = () => {
-    const maxLevel = module.module_stat.length-1;
+    const maxLevel = module.module_stat.length - 1;
     const enchant = [];
 
     for (let i = 0; i < maxLevel - level; i++) {
@@ -102,6 +91,7 @@ const ModuleComponent: React.FC<ModuleProps> = ({
       position="relative"
       cursor={"pointer"}
       _hover={{ borderColor: "red" }}
+      onClick={() => navigate(`/module/${module.module_id}`)}
     >
       <Box
         textColor="white"
@@ -132,7 +122,10 @@ const ModuleComponent: React.FC<ModuleProps> = ({
           borderRadius="5px"
           mb={1}
         >
-          <Tooltip label={module.module_stat[level].value} isDisabled={!showTooltip}>
+          <Tooltip
+            label={module.module_stat[level].value}
+            isDisabled={!showTooltip}
+          >
             <Image
               src={module.image_url}
               alt={module.module_name}

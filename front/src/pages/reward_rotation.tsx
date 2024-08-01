@@ -4,7 +4,6 @@ import { DateTime, Interval } from "ts-luxon";
 import Layout from "../components/layout";
 import {
   Box,
-  Grid,
   Heading,
   Select,
   Text,

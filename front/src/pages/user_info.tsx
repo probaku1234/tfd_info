@@ -292,6 +292,18 @@ const UserInfoPage = () => {
 
     return (
       <VStack>
+        <Heading textColor={'white'}>
+          {userData?.user_name}
+          <Image
+            src={`/images/${userData?.platform_type}.png`}
+            alt={userData?.platform_type}
+            width={'35px'}
+            display={'inline'}
+            pl={1}
+          />
+        </Heading>
+        <Heading textColor={'white'}>{userData?.mastery_rank_level}</Heading>
+        <Divider />
         <HStack>
           <Box
             alignItems={"center"}
@@ -316,6 +328,11 @@ const UserInfoPage = () => {
           border={"2px solid #334155"}
           borderRadius={"50%"}
         />
+        <Divider />
+        <Heading textColor={'white'}>모듈 수용량</Heading>
+        <Heading textColor={'white'}>
+          {userData?.module_capacity} / {userData?.module_max_capacity}
+        </Heading>
       </VStack>
     );
   }
@@ -326,7 +343,12 @@ const UserInfoPage = () => {
     );
 
     return moduleOnSlot ? (
-      <ModuleComponent module={moduleOnSlot} level={moduleOnSlot.module_enchant_level} showLevelBar showTooltip />
+      <ModuleComponent
+        module={moduleOnSlot}
+        level={moduleOnSlot.module_enchant_level}
+        showLevelBar
+        showTooltip
+      />
     ) : (
       <Image src={`/images/module.png`} />
     );
@@ -337,7 +359,7 @@ const UserInfoPage = () => {
       <Box textAlign="center">
         <Heading as="h1" size="2xl" mb={4}>
           {userData
-            ? `${userData.user_name} / 마스터 레벨: ${userData.mastery_rank_level}`
+            ? ``
             : "유저 정보 검색"}
         </Heading>
         {!query.get("user_name") ? (
@@ -367,7 +389,7 @@ const UserInfoPage = () => {
               {descendantBasicInfo(userData.descendant_id)}
               <Tabs>
                 <TabList>
-                  <Tab>모듈</Tab>
+                  <Tab textColor={"black"}>모듈</Tab>
                 </TabList>
 
                 <TabPanels>

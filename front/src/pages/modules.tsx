@@ -3,20 +3,17 @@ import Layout from "../components/layout";
 import {
   Box,
   Image,
-  Text,
   SimpleGrid,
-  Badge,
   Input,
   Select,
   VStack,
   HStack,
   IconButton,
 } from "@chakra-ui/react";
-import { SearchIcon } from "@chakra-ui/icons";
 import { debounce } from "lodash";
 import { SEO } from "../components/seo";
-import { graphql, PageProps, navigate, Link } from "gatsby";
-import { Module, ModuleStat } from "../types";
+import { graphql, PageProps, navigate } from "gatsby";
+import { Module } from "../types";
 import ModuleComponent from "../components/module";
 import { useLocation } from "@reach/router";
 import "./modules.css";
@@ -252,9 +249,7 @@ const ModulesPage: React.FC<ModulesPageProps> = ({ data }) => {
 
         <SimpleGrid columns={{ sm: 1, md: 2, lg: 3, xl: 4 }} spacing={5}>
           {filteredModules.map((module) => (
-            <Link to={`/module/${module.module_id}`} key={module.module_id}>
-              <ModuleComponent module={module} />
-            </Link>
+            <ModuleComponent module={module} />
           ))}
         </SimpleGrid>
       </Box>
