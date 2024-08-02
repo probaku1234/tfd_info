@@ -274,6 +274,7 @@ const UserInfoPage = () => {
         // });
         // setUserData(tempData);
       } catch (err) {
+        console.error(`${process.env.NEXON_API_BASE_URL} ${err}`);
         setError(`Failed to fetch user data ${err}`);
       } finally {
         setLoading(false);
