@@ -157,114 +157,122 @@ const UserInfoPage = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        // const [descendantResponse, userProfileResponse] = await Promise.all([
-        //   axios.get("tfd/v1/user/descendant", {
-        //     headers: {
-        //       "x-nxopen-api-key": `${process.env.NEXON_API_KEY}`,
-        //     },
-        //     baseURL: `${process.env.NEXON_API_BASE_URL}`,
-        //     params: { ouid: userOUId },
-        //   }),
-        //   axios.get("tfd/v1/user/basic", {
-        //     headers: {
-        //       "x-nxopen-api-key": `${process.env.NEXON_API_KEY}`,
-        //     },
-        //     baseURL: `${process.env.NEXON_API_BASE_URL}`,
-        //     params: { ouid: userOUId },
-        //   }),
-        // ]);
+        const [descendantResponse, userProfileResponse] = await Promise.all([
+          axios.get("tfd/v1/user/descendant", {
+            headers: {
+              "x-nxopen-api-key": `${process.env.NEXON_API_KEY}`,
+            },
+            baseURL: `${process.env.NEXON_API_BASE_URL}`,
+            params: { ouid: userOUId },
+          }),
+          axios.get("tfd/v1/user/basic", {
+            headers: {
+              "x-nxopen-api-key": `${process.env.NEXON_API_KEY}`,
+            },
+            baseURL: `${process.env.NEXON_API_BASE_URL}`,
+            params: { ouid: userOUId },
+          }),
+        ]);
 
-        // setUserData({
-        //   ...descendantResponse.data,
-        //   ...userProfileResponse.data,
-        // });
-        const tempData: UserInfo & UserProfile = {
-          ouid: "8102e8f67c7128b13587299ded26367b80a172f3dc21dc82265c4aaf699f9ba4",
-          user_name: "바쿠#9236",
-          descendant_id: "101000009",
-          descendant_slot_id: "1",
-          descendant_level: 28,
-          module_max_capacity: 67,
-          module_capacity: 67,
-          module: [
-            {
-              module_slot_id: "Sub 1",
-              module_id: "253003001",
-              module_enchant_level: 10,
-            },
-            {
-              module_slot_id: "Main 10",
-              module_id: "251002100",
-              module_enchant_level: 10,
-            },
-            {
-              module_slot_id: "Main 8",
-              module_id: "251001016",
-              module_enchant_level: 10,
-            },
-            {
-              module_slot_id: "Main 7",
-              module_id: "251002034",
-              module_enchant_level: 10,
-            },
-            {
-              module_slot_id: "Main 2",
-              module_id: "251001002",
-              module_enchant_level: 7,
-            },
-            {
-              module_slot_id: "Main 4",
-              module_id: "251002017",
-              module_enchant_level: 10,
-            },
-            {
-              module_slot_id: "Main 9",
-              module_id: "251003001",
-              module_enchant_level: 9,
-            },
-            {
-              module_slot_id: "Main 5",
-              module_id: "251002074",
-              module_enchant_level: 0,
-            },
-            {
-              module_slot_id: "Main 6",
-              module_id: "251001009",
-              module_enchant_level: 10,
-            },
-            {
-              module_slot_id: "Main 3",
-              module_id: "251001036",
-              module_enchant_level: 5,
-            },
-            {
-              module_slot_id: "Main 1",
-              module_id: "251003002",
-              module_enchant_level: 8,
-            },
-            {
-              module_slot_id: "Skill 1",
-              module_id: "254009003",
-              module_enchant_level: 10,
-            },
-          ],
-          platform_type: "Steam",
-          mastery_rank_level: 15,
-          mastery_rank_exp: 25546,
-          title_prefix_id: "270300003",
-          title_suffix_id: "270310074",
-          os_language: "English",
-          game_language: "KO",
+        const combinedData: UserInfo & UserProfile = {
+          ...descendantResponse.data,
+          ...userProfileResponse.data,
         };
-
-        tempData.module.forEach(function (v, index, arr) {
+        combinedData.module.forEach(function (v, index, arr) {
           arr[index] = {
             ...v,
             ...getModuleData(v.module_id),
           };
         });
-        console.log(tempData);
-        setUserData(tempData);
+
+        setUserData(combinedData);
+        //
+        // const tempData: UserInfo & UserProfile = {
+        //   ouid: "8102e8f67c7128b13587299ded26367b80a172f3dc21dc82265c4aaf699f9ba4",
+        //   user_name: "바쿠#9236",
+        //   descendant_id: "101000009",
+        //   descendant_slot_id: "1",
+        //   descendant_level: 28,
+        //   module_max_capacity: 67,
+        //   module_capacity: 67,
+        //   module: [
+        //     {
+        //       module_slot_id: "Sub 1",
+        //       module_id: "253003001",
+        //       module_enchant_level: 10,
+        //     },
+        //     {
+        //       module_slot_id: "Main 10",
+        //       module_id: "251002100",
+        //       module_enchant_level: 10,
+        //     },
+        //     {
+        //       module_slot_id: "Main 8",
+        //       module_id: "251001016",
+        //       module_enchant_level: 10,
+        //     },
+        //     {
+        //       module_slot_id: "Main 7",
+        //       module_id: "251002034",
+        //       module_enchant_level: 10,
+        //     },
+        //     {
+        //       module_slot_id: "Main 2",
+        //       module_id: "251001002",
+        //       module_enchant_level: 7,
+        //     },
+        //     {
+        //       module_slot_id: "Main 4",
+        //       module_id: "251002017",
+        //       module_enchant_level: 10,
+        //     },
+        //     {
+        //       module_slot_id: "Main 9",
+        //       module_id: "251003001",
+        //       module_enchant_level: 9,
+        //     },
+        //     {
+        //       module_slot_id: "Main 5",
+        //       module_id: "251002074",
+        //       module_enchant_level: 0,
+        //     },
+        //     {
+        //       module_slot_id: "Main 6",
+        //       module_id: "251001009",
+        //       module_enchant_level: 10,
+        //     },
+        //     {
+        //       module_slot_id: "Main 3",
+        //       module_id: "251001036",
+        //       module_enchant_level: 5,
+        //     },
+        //     {
+        //       module_slot_id: "Main 1",
+        //       module_id: "251003002",
+        //       module_enchant_level: 8,
+        //     },
+        //     {
+        //       module_slot_id: "Skill 1",
+        //       module_id: "254009003",
+        //       module_enchant_level: 10,
+        //     },
+        //   ],
+        //   platform_type: "Steam",
+        //   mastery_rank_level: 15,
+        //   mastery_rank_exp: 25546,
+        //   title_prefix_id: "270300003",
+        //   title_suffix_id: "270310074",
+        //   os_language: "English",
+        //   game_language: "KO",
+        // };
+
+        // tempData.module.forEach(function (v, index, arr) {
+        //   arr[index] = {
+        //     ...v,
+        //     ...getModuleData(v.module_id),
+        //   };
+        // });
+        // setUserData(tempData);
       } catch (err) {
         setError(`Failed to fetch user data ${err}`);
       } finally {
@@ -377,13 +385,13 @@ const UserInfoPage = () => {
 
   const moudleBox = (slotId: string) => {
     const moduleOnSlot = userData?.module.find(
-      (module) => module.module_slot_id === slotId
+      (module) => (module as DescendantModule).module_slot_id === slotId
     );
 
     return moduleOnSlot ? (
       <ModuleComponent
-        module={moduleOnSlot}
-        level={moduleOnSlot.module_enchant_level}
+        module={moduleOnSlot as Module}
+        level={(moduleOnSlot as DescendantModule).module_enchant_level}
         showLevelBar
         showTooltip
       />
@@ -395,7 +403,7 @@ const UserInfoPage = () => {
   return (
     <Layout>
       <Box textAlign="center">
-        <Heading as="h1" size="2xl" mb={4} textColor={'white'}>
+        <Heading as="h1" size="2xl" mb={4} textColor={"white"}>
           {userData ? `` : "유저 정보 검색"}
         </Heading>
         {!query.get("user_name") ? (
@@ -407,7 +415,7 @@ const UserInfoPage = () => {
                 onChange={(e) => setUserName(e.target.value)}
                 width="300px"
                 mr={2}
-                textColor={'white'}
+                textColor={"white"}
               />
               <Button type="submit" colorScheme="teal">
                 Search
