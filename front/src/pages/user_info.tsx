@@ -71,6 +71,14 @@ interface AllModulesData {
   nodes: Module[];
 }
 
+const API_BASE_URL =
+  process.env.NODE_ENV == "development"
+    ? process.env.NEXON_API_BASE_URL
+    : process.env.GATSBY_NEXON_API_BASE_URL;
+const API_KEY =
+  process.env.NODE_ENV == "development"
+    ? process.env.NEXON_API_KEY
+    : process.env.GATSBY_NEXON_API_KEY;
 const moduleSlotIds = [
   "Skill 1",
   "Main 1",
@@ -129,24 +137,24 @@ const UserInfoPage = () => {
 
   useEffect(() => {
     const fetchUserOUId = async () => {
-      // try {
-      //   setError(null);
+      try {
+        setError(null);
 
-      //   const response = await axios.get(`/tfd/v1/id`, {
-      //     headers: {
-      //       "x-nxopen-api-key": `${process.env.NEXON_API_KEY}`,
-      //     },
-      //     baseURL: `${process.env.NEXON_API_BASE_URL}`,
-      //     params: { user_name: userName },
-      //   });
-      //   setUserOUId(response.data.ouid as string);
-      // } catch (err) {
-      //   setLoading(false);
-      //   setError(`Failed to fetch user data ${err}`);
-      // }
-      setUserOUId(
-        "8102e8f67c7128b13587299ded26367b80a172f3dc21dc82265c4aaf699f9ba4"
-      );
+        const response = await axios.get(`/tfd/v1/id`, {
+          headers: {
+            "x-nxopen-api-key": API_KEY,
+          },
+          baseURL: API_BASE_URL,
+          params: { user_name: userName },
+        });
+        setUserOUId(response.data.ouid as string);
+      } catch (err) {
+        setLoading(false);
+        setError(`Failed to fetch user data ${err}`);
+      }
+      // setUserOUId(
+      //   "8102e8f67c7128b13587299ded26367b80a172f3dc21dc82265c4aaf699f9ba4"
+      // );
     };
 
     if (loading || userName) {
@@ -160,16 +168,16 @@ const UserInfoPage = () => {
         const [descendantResponse, userProfileResponse] = await Promise.all([
           axios.get("tfd/v1/user/descendant", {
             headers: {
-              "x-nxopen-api-key": `${process.env.NEXON_API_KEY}`,
+              "x-nxopen-api-key": API_KEY,
             },
-            baseURL: `${process.env.NEXON_API_BASE_URL}`,
+            baseURL: API_BASE_URL,
             params: { ouid: userOUId },
           }),
           axios.get("tfd/v1/user/basic", {
             headers: {
-              "x-nxopen-api-key": `${process.env.NEXON_API_KEY}`,
+              "x-nxopen-api-key": API_KEY,
             },
-            baseURL: `${process.env.NEXON_API_BASE_URL}`,
+            baseURL: API_BASE_URL,
             params: { ouid: userOUId },
           }),
         ]);
@@ -274,6 +282,7 @@ const UserInfoPage = () => {
         // });
         // setUserData(tempData);
       } catch (err) {
+        console.error(`${API_BASE_URL} ${err}`);
         setError(`Failed to fetch user data ${err}`);
       } finally {
         setLoading(false);
@@ -404,7 +413,9 @@ const UserInfoPage = () => {
     <Layout>
       <SEO
         title="유저 정보 검색"
-        description={`유저 ${userData?.user_name || ''}의 장착 계승자 정보를 확인 할 수 있습니다.`}
+        description={`유저 ${
+          userData?.user_name || ""
+        }의 장착 계승자 정보를 확인 할 수 있습니다.`}
       />
       <Box textAlign="center">
         <Heading as="h1" size="2xl" mb={4} textColor={"white"}>
