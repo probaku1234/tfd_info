@@ -138,7 +138,7 @@ const ModulesPage: React.FC<ModulesPageProps> = ({ data }) => {
 
   return (
     <Layout>
-      <Box p={5} bg="gray.800" minH="100vh" width={"100%"}>
+      <Box p={5} minH="100vh" width={"100%"}>
         <VStack spacing={4} mb={6}>
           <HStack spacing={4} w="100%" justify="space-between">
             <Input
