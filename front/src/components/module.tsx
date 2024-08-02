@@ -59,7 +59,7 @@ const ModuleComponent: React.FC<ModuleProps> = ({
     for (let i = 0; i < level; i++) {
       enchant.push("full");
     }
-    console.log(enchant);
+
     return (
       <>
         {enchant.map((value) => (
