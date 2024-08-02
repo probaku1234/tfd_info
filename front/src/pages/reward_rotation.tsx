@@ -71,7 +71,7 @@ function getRewardInfoByType(reward: any) {
   if (reward.reward_type === "반응로") {
     return (
       <>
-        <HStack>
+        <HStack justifyContent={'center'}>
           <Image
             src={`/images/${rewardTypeNameMap.get(
               reward.reward_type as string
@@ -326,7 +326,7 @@ const RewardRotationPage = () => {
             <Select
               defaultValue={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              textColor="black"
+              textColor="white"
             >
               <option value="reward_type">정렬기준: 유형</option>
               <option value="battle_zone_name">정렬기준: 전장</option>
@@ -335,7 +335,7 @@ const RewardRotationPage = () => {
             <Select
               defaultValue={weaponRoundsType}
               onChange={(e) => setWeaponRoundsType(e.target.value)}
-              textColor="black"
+              textColor="white"
             >
               <option value="all">전체</option>
               <option value="일반탄">일반탄</option>
@@ -347,7 +347,7 @@ const RewardRotationPage = () => {
             <Select
               defaultValue={reactorElementType}
               onChange={(e) => setReactorElementType(e.target.value)}
-              textColor="black"
+              textColor="white"
             >
               <option value="all">전체</option>
               <option value="무 속성">무 속성</option>
@@ -360,7 +360,7 @@ const RewardRotationPage = () => {
             <Select
               defaultValue={archeType}
               onChange={(e) => setArcheType(e.target.value)}
-              textColor="black"
+              textColor="white"
             >
               <option value="all">전체</option>
               <option value="융합">융합</option>
@@ -372,7 +372,7 @@ const RewardRotationPage = () => {
             <Select
               defaultValue={rewardType}
               onChange={(e) => setRewardType(e.target.value)}
-              textColor="black"
+              textColor="white"
             >
               <option value="all">전체</option>
               <option value="보조전원">보조전원</option>
