@@ -1,10 +1,10 @@
-import React from 'react';
-import { Box, Flex, Link } from '@chakra-ui/react';
-import { Link as GatsbyLink } from 'gatsby';
+import React from "react";
+import { Box, Flex, Link } from "@chakra-ui/react";
+import { Link as GatsbyLink } from "gatsby";
 
 const Header = () => {
   return (
-    <Box as="header" bg="blue.700" color="white" py={4} px={8}>
+    <Box as="header" color="white" py={4} px={8}>
       <Flex as="nav" justify="space-between" align="center">
         <Box>
           <Link as={GatsbyLink} to="/" fontWeight="bold" fontSize="xl">
@@ -13,7 +13,7 @@ const Header = () => {
         </Box>
         <Flex flex="1" justify="center">
           <Link as={GatsbyLink} to="/user_info" mx={2}>
-            계승자 정보 조회
+            유저 정보 조회
           </Link>
           <Link as={GatsbyLink} to="/reward_rotation" mx={2}>
             난이도 보상 로테이션

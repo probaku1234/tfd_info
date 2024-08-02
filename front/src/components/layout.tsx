@@ -10,9 +10,9 @@ type LayoutProps = {
 
 const Layout = ({ children }: LayoutProps) => {
   return (
-    <Flex direction="column" minH="100vh">
+    <Flex direction="column" minH="100vh" backgroundImage={'url("/images/background.png")'}>
       <Header />
-      <Flex as="main" direction="column" align="center" justify="center" flex="1" p={4} bg="blue.700">
+      <Flex as="main" direction="column" align="center" justify="center" flex="1" p={4}>
         {children}
         <Analytics />
       </Flex>
