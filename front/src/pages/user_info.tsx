@@ -163,6 +163,8 @@ const UserInfoPage = () => {
   }, [loading]);
 
   useEffect(() => {
+    console.log('asdfasdf', process.env.GATSBY_NEXON_API_BASE_URL)
+    console.log('asdfasdf', process.env.NEXON_API_BASE_URL)
     const fetchUserData = async () => {
       try {
         const [descendantResponse, userProfileResponse] = await Promise.all([
