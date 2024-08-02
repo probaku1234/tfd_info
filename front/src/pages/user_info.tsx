@@ -19,11 +19,17 @@ import {
   TabPanel,
   Divider,
   SimpleGrid,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { navigate, graphql, useStaticQuery } from "gatsby";
 import { Descendant, Module } from "../types";
 import ModuleComponent from "../components/module";
+import { SEO } from "../components/seo";
 
 interface DescendantModule {
   module_slot_id: string;
@@ -66,7 +72,7 @@ interface AllModulesData {
 }
 
 const moduleSlotIds = [
-  "Main 0",
+  "Skill 1",
   "Main 1",
   "Main 3",
   "Main 5",
@@ -236,6 +242,11 @@ const UserInfoPage = () => {
               module_id: "251003002",
               module_enchant_level: 8,
             },
+            {
+              module_slot_id: "Skill 1",
+              module_id: "254009003",
+              module_enchant_level: 10,
+            },
           ],
           platform_type: "Steam",
           mastery_rank_level: 15,
@@ -292,17 +303,17 @@ const UserInfoPage = () => {
 
     return (
       <VStack>
-        <Heading textColor={'white'}>
+        <Heading textColor={"white"}>
           {userData?.user_name}
           <Image
             src={`/images/${userData?.platform_type}.png`}
             alt={userData?.platform_type}
-            width={'35px'}
-            display={'inline'}
+            width={"35px"}
+            display={"inline"}
             pl={1}
           />
         </Heading>
-        <Heading textColor={'white'}>{userData?.mastery_rank_level}</Heading>
+        <Heading textColor={"white"}>{userData?.mastery_rank_level}</Heading>
         <Divider />
         <HStack>
           <Box
@@ -329,10 +340,37 @@ const UserInfoPage = () => {
           borderRadius={"50%"}
         />
         <Divider />
-        <Heading textColor={'white'}>모듈 수용량</Heading>
-        <Heading textColor={'white'}>
+        <Heading textColor={"white"}>모듈 수용량</Heading>
+        <Heading textColor={"white"}>
           {userData?.module_capacity} / {userData?.module_max_capacity}
         </Heading>
+        <Divider />
+        {/* <Accordion defaultIndex={[0]} allowMultiple>
+          <AccordionItem>
+            <h2>
+              <AccordionButton>
+                <Box as="span" flex="1" textAlign="left">
+                  Section 1 title
+                </Box>
+                <AccordionIcon />
+              </AccordionButton>
+            </h2>
+            <AccordionPanel pb={4}>
+              <Text>asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfas</Text>
+            </AccordionPanel>
+          </AccordionItem>
+          <AccordionItem>
+            <h2>
+              <AccordionButton>
+                <Box as="span" flex="1" textAlign="left">
+                  Section 2 title
+                </Box>
+                <AccordionIcon />
+              </AccordionButton>
+            </h2>
+            <AccordionPanel pb={4}>asdfasdfasdfasdf</AccordionPanel>
+          </AccordionItem>
+        </Accordion> */}
       </VStack>
     );
   }
@@ -357,10 +395,8 @@ const UserInfoPage = () => {
   return (
     <Layout>
       <Box textAlign="center">
-        <Heading as="h1" size="2xl" mb={4}>
-          {userData
-            ? ``
-            : "유저 정보 검색"}
+        <Heading as="h1" size="2xl" mb={4} textColor={'white'}>
+          {userData ? `` : "유저 정보 검색"}
         </Heading>
         {!query.get("user_name") ? (
           <Box as="form" onSubmit={handleSearch}>
@@ -371,6 +407,7 @@ const UserInfoPage = () => {
                 onChange={(e) => setUserName(e.target.value)}
                 width="300px"
                 mr={2}
+                textColor={'white'}
               />
               <Button type="submit" colorScheme="teal">
                 Search
@@ -423,3 +460,5 @@ const UserInfoPage = () => {
 };
 
 export default UserInfoPage;
+
+export const Head = () => <SEO title="" description="" />;
