@@ -71,6 +71,14 @@ interface AllModulesData {
   nodes: Module[];
 }
 
+const API_BASE_URL =
+  process.env.NODE_ENV == "development"
+    ? process.env.NEXON_API_BASE_URL
+    : process.env.GATSBY_NEXON_API_BASE_URL;
+const API_KEY =
+  process.env.NODE_ENV == "development"
+    ? process.env.NEXON_API_KEY
+    : process.env.GATSBY_NEXON_API_KEY;
 const moduleSlotIds = [
   "Skill 1",
   "Main 1",
@@ -160,16 +168,16 @@ const UserInfoPage = () => {
         const [descendantResponse, userProfileResponse] = await Promise.all([
           axios.get("tfd/v1/user/descendant", {
             headers: {
-              "x-nxopen-api-key": `${process.env.NEXON_API_KEY}`,
+              "x-nxopen-api-key": API_KEY,
             },
             baseURL: `${process.env.NEXON_API_BASE_URL}`,
             params: { ouid: userOUId },
           }),
           axios.get("tfd/v1/user/basic", {
             headers: {
-              "x-nxopen-api-key": `${process.env.NEXON_API_KEY}`,
+              "x-nxopen-api-key": API_KEY,
             },
-            baseURL: `${process.env.NEXON_API_BASE_URL}`,
+            baseURL: API_BASE_URL,
             params: { ouid: userOUId },
           }),
         ]);
@@ -274,7 +282,7 @@ const UserInfoPage = () => {
         // });
         // setUserData(tempData);
       } catch (err) {
-        console.error(`${process.env.NEXON_API_BASE_URL} ${err}`);
+        console.error(`${API_BASE_URL} ${err}`);
         setError(`Failed to fetch user data ${err}`);
       } finally {
         setLoading(false);
@@ -405,7 +413,9 @@ const UserInfoPage = () => {
     <Layout>
       <SEO
         title="유저 정보 검색"
-        description={`유저 ${userData?.user_name || ''}의 장착 계승자 정보를 확인 할 수 있습니다.`}
+        description={`유저 ${
+          userData?.user_name || ""
+        }의 장착 계승자 정보를 확인 할 수 있습니다.`}
       />
       <Box textAlign="center">
         <Heading as="h1" size="2xl" mb={4} textColor={"white"}>
