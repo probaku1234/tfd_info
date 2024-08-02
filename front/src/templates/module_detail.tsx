@@ -51,7 +51,11 @@ const ModuleDetail: React.FC<ModuleDetailProps> = ({ data }) => {
 
   return (
     <Layout>
-      <Box p={5} bg="gray.800" minH="100vh" width={"100%"}>
+      <SEO 
+        title={module.module_name}
+        description={`모듈 ${module.module_name}의 상세 정보입니다.`}
+      />
+      <Box p={5} minH="100vh" width={"100%"}>
         <VStack spacing={4}>
           <HStack justifyContent="center" alignItems="center">
             <ArrowLeftIcon
@@ -61,6 +65,7 @@ const ModuleDetail: React.FC<ModuleDetailProps> = ({ data }) => {
               cursor={"pointer"}
               onClick={() => handleArrowClick(true)}
               mr={10}
+              _hover={{color: 'gray'}}
             />
             <ModuleComponent module={module} level={level}/>
             <ArrowRightIcon
@@ -70,6 +75,7 @@ const ModuleDetail: React.FC<ModuleDetailProps> = ({ data }) => {
               cursor={"pointer"}
               onClick={() => handleArrowClick(false)}
               ml={10}
+              _hover={{color: 'gray'}}
             />
           </HStack>
 
@@ -79,7 +85,7 @@ const ModuleDetail: React.FC<ModuleDetailProps> = ({ data }) => {
               p={2}
               bg="gray.700"
               borderRadius="md"
-              width="100%"
+              width="60%"
               textAlign="center"
               border={'1px solid'}
               borderColor={index === level ? 'red': ''}
@@ -96,10 +102,3 @@ const ModuleDetail: React.FC<ModuleDetailProps> = ({ data }) => {
 };
 
 export default ModuleDetail;
-
-export const Head = () => (
-  <SEO
-    title="모듈 상세 정보"
-    description="모듈의 상세 정보를 확인할 수 있습니다."
-  />
-);

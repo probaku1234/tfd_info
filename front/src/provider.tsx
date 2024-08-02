@@ -1,4 +1,5 @@
 import * as React from "react";
+import "@fontsource/do-hyeon";
 import { ChakraProvider } from "@chakra-ui/react";
 import type { WrapRootElementBrowserArgs } from "gatsby";
 import { customTheme } from "./theme";

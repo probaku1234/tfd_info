@@ -19,7 +19,7 @@ export const SEO: React.FC<SEOProps> = ({
     description: defaultDescription,
     image,
     siteUrl,
-    twitterUsername,
+    keywords,
   } = useSiteMetadata();
 
   const seo = {
@@ -27,7 +27,7 @@ export const SEO: React.FC<SEOProps> = ({
     description: description || defaultDescription,
     image: `${siteUrl}${image}`,
     url: `${siteUrl}${pathname || ``}`,
-    twitterUsername,
+    keywords,
   };
 
   return (
@@ -35,6 +35,8 @@ export const SEO: React.FC<SEOProps> = ({
       <title>{seo.title}</title>
       <meta name="description" content={seo.description} />
       <meta name="image" content={seo.image} />
+      <meta name='url' content={seo.url} />
+      <meta name='keywords' content={seo.keywords} />
       {children}
     </>
   );
