@@ -51,6 +51,10 @@ const ModuleDetail: React.FC<ModuleDetailProps> = ({ data }) => {
 
   return (
     <Layout>
+      <SEO 
+        title={module.module_name}
+        description={`모듈 ${module.module_name}의 상세 정보입니다.`}
+      />
       <Box p={5} minH="100vh" width={"100%"}>
         <VStack spacing={4}>
           <HStack justifyContent="center" alignItems="center">
@@ -98,10 +102,3 @@ const ModuleDetail: React.FC<ModuleDetailProps> = ({ data }) => {
 };
 
 export default ModuleDetail;
-
-export const Head = () => (
-  <SEO
-    title="모듈 상세 정보"
-    description="모듈의 상세 정보를 확인할 수 있습니다."
-  />
-);

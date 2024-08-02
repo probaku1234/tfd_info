@@ -402,6 +402,10 @@ const UserInfoPage = () => {
 
   return (
     <Layout>
+      <SEO
+        title="유저 정보 검색"
+        description={`유저 ${userData?.user_name || ''}의 장착 계승자 정보를 확인 할 수 있습니다.`}
+      />
       <Box textAlign="center">
         <Heading as="h1" size="2xl" mb={4} textColor={"white"}>
           {userData ? `` : "유저 정보 검색"}
@@ -468,5 +472,3 @@ const UserInfoPage = () => {
 };
 
 export default UserInfoPage;
-
-export const Head = () => <SEO title="" description="" />;

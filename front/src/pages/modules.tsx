@@ -259,4 +259,4 @@ const ModulesPage: React.FC<ModulesPageProps> = ({ data }) => {
 
 export default ModulesPage;
 
-export const Head = () => <SEO />;
+export const Head = () => <SEO title="모듈 리스트" description="모든 모듈들의 리스트입니다." pathname='reward_rotation'/>;
