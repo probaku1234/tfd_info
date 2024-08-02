@@ -51,7 +51,7 @@ const ModuleDetail: React.FC<ModuleDetailProps> = ({ data }) => {
 
   return (
     <Layout>
-      <Box p={5} bg="gray.800" minH="100vh" width={"100%"}>
+      <Box p={5} minH="100vh" width={"100%"}>
         <VStack spacing={4}>
           <HStack justifyContent="center" alignItems="center">
             <ArrowLeftIcon
@@ -61,6 +61,7 @@ const ModuleDetail: React.FC<ModuleDetailProps> = ({ data }) => {
               cursor={"pointer"}
               onClick={() => handleArrowClick(true)}
               mr={10}
+              _hover={{color: 'gray'}}
             />
             <ModuleComponent module={module} level={level}/>
             <ArrowRightIcon
@@ -70,6 +71,7 @@ const ModuleDetail: React.FC<ModuleDetailProps> = ({ data }) => {
               cursor={"pointer"}
               onClick={() => handleArrowClick(false)}
               ml={10}
+              _hover={{color: 'gray'}}
             />
           </HStack>
 
@@ -79,7 +81,7 @@ const ModuleDetail: React.FC<ModuleDetailProps> = ({ data }) => {
               p={2}
               bg="gray.700"
               borderRadius="md"
-              width="100%"
+              width="60%"
               textAlign="center"
               border={'1px solid'}
               borderColor={index === level ? 'red': ''}
