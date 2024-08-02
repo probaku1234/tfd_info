@@ -163,8 +163,6 @@ const UserInfoPage = () => {
   }, [loading]);
 
   useEffect(() => {
-    console.log('asdfasdf', process.env.GATSBY_NEXON_API_BASE_URL)
-    console.log('asdfasdf', process.env.NEXON_API_BASE_URL)
     const fetchUserData = async () => {
       try {
         const [descendantResponse, userProfileResponse] = await Promise.all([
@@ -172,7 +170,7 @@ const UserInfoPage = () => {
             headers: {
               "x-nxopen-api-key": API_KEY,
             },
-            baseURL: `${process.env.NEXON_API_BASE_URL}`,
+            baseURL: API_BASE_URL,
             params: { ouid: userOUId },
           }),
           axios.get("tfd/v1/user/basic", {
