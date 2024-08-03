@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Box, Image, Text, HStack, Tooltip } from "@chakra-ui/react";
 import { Module } from "../types";
 import { navigate } from "gatsby";
+import LocaleContext from "../context/locale_context";
 
 interface ModuleProps {
   module: Module;
@@ -19,7 +20,15 @@ tierColorMap.set(
   "linear-gradient(130deg, #3d6c8c 10%, #000 46%, #000 54%, #3d6c8c 90%)"
 );
 tierColorMap.set(
+  "Standard",
+  "linear-gradient(130deg, #3d6c8c 10%, #000 46%, #000 54%, #3d6c8c 90%)"
+);
+tierColorMap.set(
   "희귀",
+  "linear-gradient(130deg, #511e7a 10%, #1a1a1a 46%, #1a1a1a 54%, #511e7a 90%)"
+);
+tierColorMap.set(
+  "Rare",
   "linear-gradient(130deg, #511e7a 10%, #1a1a1a 46%, #1a1a1a 54%, #511e7a 90%)"
 );
 tierColorMap.set(
@@ -27,7 +36,15 @@ tierColorMap.set(
   "linear-gradient(130deg, #988b5e 10%, #1a1a1a 46%, #1a1a1a 54%, #988b5e 90%)"
 );
 tierColorMap.set(
+  "Ultimate",
+  "linear-gradient(130deg, #988b5e 10%, #1a1a1a 46%, #1a1a1a 54%, #988b5e 90%)"
+);
+tierColorMap.set(
   "초월",
+  "linear-gradient(150deg, #843e2f 10%, #1a1a1a 46%, #1a1a1a 54%, #843e2f 90%)"
+);
+tierColorMap.set(
+  "Transcendent",
   "linear-gradient(150deg, #843e2f 10%, #1a1a1a 46%, #1a1a1a 54%, #843e2f 90%)"
 );
 
@@ -38,10 +55,10 @@ socketImageNameMap.set("말라카이트", "Malachite.png");
 socketImageNameMap.set("루틸", "Rutile.png");
 
 classImageNameMap.set("계승자", "module_descendant.png");
-classImageNameMap.set("일반탄", "module_ammo_a.png");
-classImageNameMap.set("충격탄", "module_ammo_b.png");
-classImageNameMap.set("특수탄", "module_ammo_c.png");
-classImageNameMap.set("고위력탄", "module_ammo_d.png");
+classImageNameMap.set("일반탄", "module_general rounds.png");
+classImageNameMap.set("충격탄", "module_impact rounds.png");
+classImageNameMap.set("특수탄", "module_special rounds.png");
+classImageNameMap.set("고위력탄", "module_high-power rounds.png");
 
 const ModuleComponent: React.FC<ModuleProps> = ({
   module,
@@ -49,6 +66,9 @@ const ModuleComponent: React.FC<ModuleProps> = ({
   showLevelBar = false,
   showTooltip = false,
 }) => {
+  const localeContext = useContext(LocaleContext);
+  const { locale } = localeContext!;
+
   const enchantLevelBar = () => {
     const maxLevel = module.module_stat.length - 1;
     const enchant = [];
@@ -105,7 +125,11 @@ const ModuleComponent: React.FC<ModuleProps> = ({
         top="-0.5%"
       >
         <Image
-          src={`/images/${socketImageNameMap.get(module.module_socket_type)}`}
+          src={
+            locale === "ko"
+              ? `/images/${socketImageNameMap.get(module.module_socket_type)}`
+              : `/images/${module.module_socket_type}.png`
+          }
           alt={module.module_socket_type}
           width="24px"
           height="24px"
@@ -141,7 +165,11 @@ const ModuleComponent: React.FC<ModuleProps> = ({
       </Text>
       <HStack spacing={1} mb={2}>
         <Image
-          src={`/images/${classImageNameMap.get(module.module_class)}`}
+          src={
+            locale === "ko"
+              ? `/images/${classImageNameMap.get(module.module_class)}`
+              : `/images/module_${module.module_class}.png`
+          }
           alt={module.module_class}
           width="40px"
           height="40px"

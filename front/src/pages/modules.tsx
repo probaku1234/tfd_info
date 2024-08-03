@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useContext } from "react";
 import Layout from "../components/layout";
 import {
   Box,
@@ -13,15 +13,16 @@ import {
 import { debounce } from "lodash";
 import { SEO } from "../components/seo";
 import { graphql, PageProps, navigate } from "gatsby";
-import { Module } from "../types";
+import { Module, ModuleWithLocale } from "../types";
 import ModuleComponent from "../components/module";
 import { useLocation } from "@reach/router";
+import LocaleContext from "../context/locale_context";
 import "./modules.css";
 
 interface ModulesPageProps extends PageProps {
   data: {
     allModule: {
-      nodes: Module[];
+      nodes: ModuleWithLocale[];
     };
   };
 }
@@ -42,17 +43,21 @@ export const query = graphql`
         }
         module_class
         module_socket_type
+        locale
       }
     }
   }
 `;
 
 const ModulesPage: React.FC<ModulesPageProps> = ({ data }) => {
+  const localeContext = useContext(LocaleContext);
+  const { locale } = localeContext!;
   const modules = data.allModule.nodes;
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const selectedBorderColor = "red";
   const borderColor = "black";
+  const translations = translation[locale] || translation.en;
 
   const [searchKeyword, setSearchKeyword] = useState<string | null>(
     searchParams.get("searchKeyword") || null
@@ -79,7 +84,7 @@ const ModulesPage: React.FC<ModulesPageProps> = ({ data }) => {
 
   useEffect(() => {
     const filterModules = () => {
-      let filtered = modules;
+      let filtered = modules.filter((module) => module.locale === locale);
 
       if (searchKeyword) {
         filtered = filtered.filter(
@@ -113,7 +118,7 @@ const ModulesPage: React.FC<ModulesPageProps> = ({ data }) => {
     };
 
     filterModules();
-  }, [searchKeyword, tier, moduleClass, socket, modules]);
+  }, [searchKeyword, tier, moduleClass, socket, modules, locale]);
 
   const onHandleClassIconClick = (value: string) => {
     if (value == moduleClass) {
@@ -138,11 +143,16 @@ const ModulesPage: React.FC<ModulesPageProps> = ({ data }) => {
 
   return (
     <Layout>
+      <SEO
+        title={translations.seo_title}
+        description={translations.seo_description}
+        pathname="reward_rotation"
+      />
       <Box p={5} minH="100vh" width={"100%"}>
         <VStack spacing={4} mb={6}>
           <HStack spacing={4} w="100%" justify="space-between">
             <Input
-              placeholder="Search by stats or name"
+              placeholder={translations.search_placeholder}
               defaultValue={searchKeyword || ""}
               bg="gray.700"
               border="none"
@@ -156,76 +166,126 @@ const ModulesPage: React.FC<ModulesPageProps> = ({ data }) => {
               border="none"
               color="white"
             >
-              <option value={"all"}>전체</option>
-              <option style={{ color: "#2895bb" }} value={"일반"}>
-                일반
+              <option value={"all"}>{translations.all}</option>
+              <option
+                style={{ color: "#2895bb" }}
+                value={translations.standard}
+              >
+                {translations.standard}
               </option>
-              <option style={{ color: "#864ab7" }} value={"희귀"}>
-                희귀
+              <option style={{ color: "#864ab7" }} value={translations.rare}>
+                {translations.rare}
               </option>
-              <option style={{ color: "#bf9138" }} value={"궁극"}>
-                궁극
+              <option
+                style={{ color: "#bf9138" }}
+                value={translations.ultimate}
+              >
+                {translations.ultimate}
               </option>
-              <option style={{ color: "#b1543f" }} value={"초월"}>
-                초월
+              <option
+                style={{ color: "#b1543f" }}
+                value={translations.transcendent}
+              >
+                {translations.transcendent}
               </option>
               {/* 추가 옵션들 */}
             </Select>
             <HStack spacing={2}>
               <IconButton
                 aria-label="Filter by class"
-                onClick={() => onHandleClassIconClick("계승자")}
+                onClick={() => onHandleClassIconClick(translations.descendant)}
                 icon={
-                  <Image src="/images/module_descendant.png" alt="계승자" />
+                  <Image
+                    src="/images/module_descendant.png"
+                    alt={translations.descendant}
+                  />
                 }
                 bg="gray.700"
                 border={"1px solid"}
                 borderColor={
-                  moduleClass === "계승자" ? selectedBorderColor : borderColor
-                }
-                _hover={{ bg: "gray.600" }}
-              />
-              <IconButton
-                aria-label="Filter by class"
-                onClick={() => onHandleClassIconClick("일반탄")}
-                icon={<Image src="/images/module_ammo_a.png" alt="일반탄" />}
-                bg="gray.700"
-                border={"1px solid"}
-                borderColor={
-                  moduleClass === "일반탄" ? selectedBorderColor : borderColor
+                  moduleClass === translations.descendant
+                    ? selectedBorderColor
+                    : borderColor
                 }
                 _hover={{ bg: "gray.600" }}
               />
               <IconButton
                 aria-label="Filter by class"
-                onClick={() => onHandleClassIconClick("충격탄")}
-                icon={<Image src="/images/module_ammo_b.png" alt="충격탄" />}
+                onClick={() =>
+                  onHandleClassIconClick(translations.general_rounds)
+                }
+                icon={
+                  <Image
+                    src="/images/module_general rounds.png"
+                    alt={translations.general_rounds}
+                  />
+                }
                 bg="gray.700"
                 border={"1px solid"}
                 borderColor={
-                  moduleClass === "충격탄" ? selectedBorderColor : borderColor
+                  moduleClass === translations.general_rounds
+                    ? selectedBorderColor
+                    : borderColor
                 }
                 _hover={{ bg: "gray.600" }}
               />
               <IconButton
                 aria-label="Filter by class"
-                onClick={() => onHandleClassIconClick("특수탄")}
-                icon={<Image src="/images/module_ammo_c.png" alt="특수탄" />}
+                onClick={() =>
+                  onHandleClassIconClick(translations.impact_rounds)
+                }
+                icon={
+                  <Image
+                    src="/images/module_impact rounds.png"
+                    alt={translations.impact_rounds}
+                  />
+                }
                 bg="gray.700"
                 border={"1px solid"}
                 borderColor={
-                  moduleClass === "특수탄" ? selectedBorderColor : borderColor
+                  moduleClass === translations.impact_rounds
+                    ? selectedBorderColor
+                    : borderColor
                 }
                 _hover={{ bg: "gray.600" }}
               />
               <IconButton
                 aria-label="Filter by class"
-                onClick={() => onHandleClassIconClick("고위력탄")}
-                icon={<Image src="/images/module_ammo_d.png" alt="고위력탄" />}
+                onClick={() =>
+                  onHandleClassIconClick(translations.special_rounds)
+                }
+                icon={
+                  <Image
+                    src="/images/module_special rounds.png"
+                    alt={translations.special_rounds}
+                  />
+                }
                 bg="gray.700"
                 border={"1px solid"}
                 borderColor={
-                  moduleClass === "고위력탄" ? selectedBorderColor : borderColor
+                  moduleClass === translations.special_rounds
+                    ? selectedBorderColor
+                    : borderColor
+                }
+                _hover={{ bg: "gray.600" }}
+              />
+              <IconButton
+                aria-label="Filter by class"
+                onClick={() =>
+                  onHandleClassIconClick(translations.high_power_rounds)
+                }
+                icon={
+                  <Image
+                    src="/images/module_high-power rounds.png"
+                    alt={translations.high_power_rounds}
+                  />
+                }
+                bg="gray.700"
+                border={"1px solid"}
+                borderColor={
+                  moduleClass === translations.high_power_rounds
+                    ? selectedBorderColor
+                    : borderColor
                 }
                 _hover={{ bg: "gray.600" }}
               />
@@ -237,12 +297,18 @@ const ModulesPage: React.FC<ModulesPageProps> = ({ data }) => {
               border="none"
               color="white"
             >
-              <option value="all">전체</option>
-              <option value="크산틱">크산틱</option>
-              <option value="세룰리안">세룰리안</option>
-              <option value="알만딘">알만딘</option>
-              <option value="말라카이트">말라카이트</option>
-              <option value="루틸">루틸</option>
+              <option value="all">{translations.all}</option>
+              <option value={translations.xantic}>{translations.xantic}</option>
+              <option value={translations.cerulean}>
+                {translations.cerulean}
+              </option>
+              <option value={translations.almandine}>
+                {translations.almandine}
+              </option>
+              <option value={translations.malachite}>
+                {translations.malachite}
+              </option>
+              <option value={translations.rutile}>{translations.rutile}</option>
             </Select>
           </HStack>
         </VStack>
@@ -259,4 +325,66 @@ const ModulesPage: React.FC<ModulesPageProps> = ({ data }) => {
 
 export default ModulesPage;
 
-export const Head = () => <SEO title="모듈 리스트" description="모든 모듈들의 리스트입니다." pathname='reward_rotation'/>;
+const translation: {
+  [key: string]: {
+    all: string;
+    standard: string;
+    rare: string;
+    ultimate: string;
+    transcendent: string;
+    descendant: string;
+    general_rounds: string;
+    impact_rounds: string;
+    special_rounds: string;
+    high_power_rounds: string;
+    xantic: string;
+    cerulean: string;
+    almandine: string;
+    malachite: string;
+    rutile: string;
+    search_placeholder: string;
+    seo_title: string;
+    seo_description: string;
+  };
+} = {
+  ko: {
+    all: "전체",
+    standard: "일반",
+    rare: "희귀",
+    ultimate: "궁극",
+    transcendent: "초월",
+    descendant: "계승자",
+    general_rounds: "일반탄",
+    impact_rounds: "충격탄",
+    special_rounds: "특수탄",
+    high_power_rounds: "고위력탄",
+    xantic: "크산틱",
+    cerulean: "세룰리안",
+    almandine: "알만딘",
+    malachite: "말라카이트",
+    rutile: "루틸",
+    search_placeholder: "검색",
+    seo_title: "모듈 리스트",
+    seo_description: "모든 모듈들의 리스트입니다.",
+  },
+  en: {
+    all: "all",
+    standard: "Standard",
+    rare: "Rare",
+    ultimate: "Ultimate",
+    transcendent: "Transcendent",
+    descendant: "Descendant",
+    general_rounds: "General Rounds",
+    impact_rounds: "Impact Rounds",
+    special_rounds: "Special Rounds",
+    high_power_rounds: "High-Power Rounds",
+    xantic: "Xantic",
+    cerulean: "Cerulean",
+    almandine: "Almandine",
+    malachite: "Malachite",
+    rutile: "Rutile",
+    search_placeholder: "Search by stats or name",
+    seo_title: "Module List",
+    seo_description: "This page shows all modules",
+  },
+};
