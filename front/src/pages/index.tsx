@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import Layout from "../components/layout";
 import { Box, Heading, Text, Image, keyframes } from "@chakra-ui/react";
 import { SEO } from "../components/seo";
+import LocaleContext from "../context/locale_context";
 
 const IndexPage = () => {
+  const localeContext = useContext(LocaleContext);
+  const { locale } = localeContext!;
+
   // Define keyframes for the animations
   const fadeIn = keyframes`
     from { opacity: 0; }
@@ -14,6 +18,12 @@ const IndexPage = () => {
     from { filter: blur(0px); }
     to { filter: blur(8px); }
   `;
+
+  const getTranslation = (locale: string) => {
+    return translation[locale] || translation.en;
+  };
+
+  const { welcome_title, welcome_message } = getTranslation(locale);
 
   return (
     <Layout>
@@ -35,11 +45,10 @@ const IndexPage = () => {
             animation={`${fadeIn} 2s ease forwards 1s`} // Delay text fade-in to start after image blur begins
           >
             <Heading as="h1" size="2xl" mb={4}>
-              환영합니다, 계승자님
+              {welcome_title}
             </Heading>
             <Text fontSize="xl" mb={4}>
-              퍼스트 디센턴트 유저 계승자, 보상 로테이션, 모듈 정보를
-              확인해보세요.
+              {welcome_message}
             </Text>
           </Box>
         </Box>
@@ -51,3 +60,16 @@ const IndexPage = () => {
 export default IndexPage;
 
 export const Head = () => <SEO />;
+
+const translation: { [key: string]: { welcome_title: string; welcome_message: string } } = {
+  ko: {
+    welcome_title: "환영합니다, 계승자님",
+    welcome_message:
+      "퍼스트 디센턴트 유저 계승자, 보상 로테이션, 모듈 정보를 확인해보세요.",
+  },
+  en: {
+    welcome_title: "Welcome, Descendant",
+    welcome_message:
+      "Check out the First Decent User, Reward Rotation, and Module information.",
+  },
+};
