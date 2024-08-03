@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useLocation } from "@reach/router";
 import Layout from "../components/layout";
 import {
@@ -27,9 +27,10 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { navigate, graphql, useStaticQuery } from "gatsby";
-import { Descendant, Module } from "../types";
+import { DescendantWithLocale, ModuleWithLocale } from "../types";
 import ModuleComponent from "../components/module";
 import { SEO } from "../components/seo";
+import LocaleContext from "../context/locale_context";
 
 interface DescendantModule {
   module_slot_id: string;
@@ -45,7 +46,7 @@ interface UserInfo {
   descendant_level: number;
   module_max_capacity: number;
   module_capacity: number;
-  module: (DescendantModule | Module)[];
+  module: (DescendantModule | ModuleWithLocale)[];
 }
 
 interface UserProfile {
@@ -62,13 +63,13 @@ interface UserProfile {
 
 interface AllDescendantsData {
   nodes: Pick<
-    Descendant,
-    "descendant_id" | "descendant_name" | "descendant_image_url"
+    DescendantWithLocale,
+    "descendant_id" | "descendant_name" | "descendant_image_url" | "locale"
   >[];
 }
 
 interface AllModulesData {
-  nodes: Module[];
+  nodes: ModuleWithLocale[];
 }
 
 const API_BASE_URL =
@@ -94,6 +95,8 @@ const moduleSlotIds = [
   "Main 10",
 ];
 const UserInfoPage = () => {
+  const localeContext = useContext(LocaleContext);
+  const { locale } = localeContext!;
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const [loading, setLoading] = useState(false);
@@ -114,6 +117,7 @@ const UserInfoPage = () => {
           descendant_id
           descendant_name
           descendant_image_url
+          locale
         }
       }
       allModule {
@@ -130,10 +134,18 @@ const UserInfoPage = () => {
           }
           module_class
           module_socket_type
+          locale
         }
       }
     }
   `);
+
+  const seoDescription = translation[locale].seo_description.replace(
+    "{user_name}",
+    userName ? userName : ""
+  );
+
+  const translations = translation[locale] || translation.en;
 
   useEffect(() => {
     const fetchUserOUId = async () => {
@@ -305,13 +317,15 @@ const UserInfoPage = () => {
 
   const getDescendantData = (descendantId: string) => {
     return (allDescendant as AllDescendantsData).nodes.find(
-      (descendant) => descendant.descendant_id === descendantId
+      (descendant) =>
+        descendant.descendant_id === descendantId &&
+        descendant.locale === locale
     );
   };
 
   const getModuleData = (moduleId: string) => {
     return (allModule as AllModulesData).nodes.find(
-      (module) => module.module_id === moduleId
+      (module) => module.module_id === moduleId && module.locale === locale
     );
   };
 
@@ -357,7 +371,7 @@ const UserInfoPage = () => {
           borderRadius={"50%"}
         />
         <Divider />
-        <Heading textColor={"white"}>모듈 수용량</Heading>
+        <Heading textColor={"white"}>{translations.capacity}</Heading>
         <Heading textColor={"white"}>
           {userData?.module_capacity} / {userData?.module_max_capacity}
         </Heading>
@@ -399,7 +413,7 @@ const UserInfoPage = () => {
 
     return moduleOnSlot ? (
       <ModuleComponent
-        module={moduleOnSlot as Module}
+        module={moduleOnSlot as ModuleWithLocale}
         level={(moduleOnSlot as DescendantModule).module_enchant_level}
         showLevelBar
         showTooltip
@@ -412,20 +426,18 @@ const UserInfoPage = () => {
   return (
     <Layout>
       <SEO
-        title="유저 정보 검색"
-        description={`유저 ${
-          userData?.user_name || ""
-        }의 장착 계승자 정보를 확인 할 수 있습니다.`}
+        title={translations.seo_title}
+        description={seoDescription}
       />
       <Box textAlign="center">
         <Heading as="h1" size="2xl" mb={4} textColor={"white"}>
-          {userData ? `` : "유저 정보 검색"}
+          {userData ? `` : translations.head}
         </Heading>
         {!query.get("user_name") ? (
           <Box as="form" onSubmit={handleSearch}>
             <Flex justify="center">
               <Input
-                placeholder="닉네임#1234"
+                placeholder={translations.search_placeholder}
                 value={userName || ""}
                 onChange={(e) => setUserName(e.target.value)}
                 width="300px"
@@ -433,7 +445,7 @@ const UserInfoPage = () => {
                 textColor={"white"}
               />
               <Button type="submit" colorScheme="teal">
-                Search
+                {translations.search_button}
               </Button>
             </Flex>
           </Box>
@@ -449,7 +461,7 @@ const UserInfoPage = () => {
               {descendantBasicInfo(userData.descendant_id)}
               <Tabs>
                 <TabList>
-                  <Tab textColor={"black"}>모듈</Tab>
+                  <Tab textColor={"black"}>{translations.module}</Tab>
                 </TabList>
 
                 <TabPanels>
@@ -483,3 +495,39 @@ const UserInfoPage = () => {
 };
 
 export default UserInfoPage;
+
+const translation: {
+  [key: string]: {
+    seo_title: string;
+    seo_description: string;
+    head: string;
+    search_placeholder: string;
+    search_button: string;
+    module: string;
+    level: string;
+    capacity: string;
+  };
+} = {
+  ko: {
+    seo_title: "유저 정보 검색",
+    seo_description:
+      "유저 {user_name}의 장착 계승자 정보를 확인 할 수 있습니다.",
+    head: "유저 정보 검색",
+    search_placeholder: "닉네임#1234",
+    search_button: "검색",
+    module: "모듈",
+    level: "강화 레벨",
+    capacity: "모듈 수용량",
+  },
+  en: {
+    seo_title: "Search For User Information",
+    seo_description:
+      "You can check the equipped descendant information for user {user_name}.",
+    head: "Search For User Information",
+    search_placeholder: "Nickname#1234",
+    search_button: "Search",
+    module: "Module",
+    level: "Enchant Level",
+    capacity: "Capacity",
+  },
+};
