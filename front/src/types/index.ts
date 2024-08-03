@@ -25,6 +25,10 @@ export interface Descendant {
   descendant_skill: DescendantSkill[];
 }
 
+export interface DescendantWithLocale extends Descendant{
+  locale: 'ko' | 'en'
+}
+
 export interface ModuleStat {
   level: number;
   module_capacity: number;
@@ -40,6 +44,10 @@ export interface Module {
   module_socket_type: string;
   module_class: string;
   module_stat: ModuleStat[];
+}
+
+export interface ModuleWithLocale extends Module{
+  locale: 'ko' | 'en'
 }
 
 export interface Reward {
