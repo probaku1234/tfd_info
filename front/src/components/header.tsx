@@ -1,8 +1,21 @@
-import React from "react";
-import { Box, Flex, Link } from "@chakra-ui/react";
+import React, { useContext } from "react";
+import { Box, Flex, Link, Button } from "@chakra-ui/react";
 import { Link as GatsbyLink } from "gatsby";
+import LocaleContext from "../context/locale_context";
 
 const Header = () => {
+  const localeContext = useContext(LocaleContext);
+
+  if (!localeContext) {
+    throw new Error("Header must be used within a LocaleProvider");
+  }
+
+  const { locale, setLocale } = localeContext;
+
+  const toggleLocale = () => {
+    setLocale(locale === "ko" ? "en" : "ko");
+  };
+
   return (
     <Box as="header" color="white" py={4} px={8}>
       <Flex as="nav" justify="space-between" align="center">
@@ -21,10 +34,23 @@ const Header = () => {
           <Link as={GatsbyLink} to="/modules" mx={2}>
             모듈
           </Link>
-          {/* <Link as={GatsbyLink} to="/contact" mx={2}>
-            Contact
-          </Link> */}
         </Flex>
+        <Box>
+          <Button
+            onClick={toggleLocale}
+            colorScheme={locale === "ko" ? "blue" : "gray"}
+            variant="outline"
+            borderColor={locale === "ko" ? "blue.500" : "gray.500"}
+            color={locale === "ko" ? "blue.500" : "gray.500"}
+            _hover={{
+              bg: locale === "ko" ? "blue.500" : "gray.500",
+              color: "white",
+            }}
+            minWidth="70px"
+          >
+            {locale === "ko" ? "한국어" : "EN"}
+          </Button>
+        </Box>
       </Flex>
     </Box>
   );
