@@ -461,7 +461,7 @@ const UserInfoPage = () => {
               {descendantBasicInfo(userData.descendant_id)}
               <Tabs>
                 <TabList>
-                  <Tab textColor={"black"}>{translations.module}</Tab>
+                  <Tab textColor={"white"}>{translations.module}</Tab>
                 </TabList>
 
                 <TabPanels>
