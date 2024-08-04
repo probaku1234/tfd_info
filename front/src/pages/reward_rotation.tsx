@@ -76,9 +76,7 @@ const calculateDurationBasedOnOffset = (offset: number) => {
 };
 
 function getRewardInfoByType(reward: any) {
-  const imageName =
-    rewardTypeNameMap.get(reward.reward_type as string) ||
-    `${reward.reward_type}.png`;
+  const imageName = rewardTypeNameMap.get(reward.reward_type as string);
 
   if (reward.reward_type === "반응로" || reward.reward_type === "Reactor") {
     return (
@@ -124,6 +122,11 @@ rewardTypeNameMap.set("메모리", "memory.png");
 rewardTypeNameMap.set("보조 전원", "auxiliary power.png");
 rewardTypeNameMap.set("센서", "sensor.png");
 rewardTypeNameMap.set("처리 장치", "processor.png");
+rewardTypeNameMap.set("Reactor", "reactor.png");
+rewardTypeNameMap.set("Memory", "memory.png");
+rewardTypeNameMap.set("Auxiliary Power", "auxiliary power.png");
+rewardTypeNameMap.set("Sensor", "sensor.png");
+rewardTypeNameMap.set("Processor", "processor.png");
 
 const RewardRotationPage = () => {
   const localeContext = useContext(LocaleContext);
@@ -270,7 +273,7 @@ const RewardRotationPage = () => {
           }))
       )
     );
-    
+
   filteredRewards = filteredRewards.sort((a: any, b: any) => {
     if (sortBy === "reward_type") {
       return a.reward_type.localeCompare(b.reward_type);
