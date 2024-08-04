@@ -26,22 +26,21 @@ const Header = () => {
         </Box>
         <Flex flex="1" justify="center">
           <Link as={GatsbyLink} to="/user_info" mx={2}>
-            {locale === 'ko' ? '유저 정보 조회': 'Search User Info'}
+            {locale === "ko" ? "유저 정보 조회" : "Search User Info"}
           </Link>
           <Link as={GatsbyLink} to="/reward_rotation" mx={2}>
-            {locale === 'ko' ? '난이도 보상 로테이션' : 'Difficulty Level Rewards'}
+            {locale === "ko"
+              ? "난이도 보상 로테이션"
+              : "Difficulty Level Rewards"}
           </Link>
           <Link as={GatsbyLink} to="/modules" mx={2}>
-            {locale === 'ko' ? '모듈' : 'Module'}
+            {locale === "ko" ? "모듈" : "Module"}
           </Link>
         </Flex>
         <Box>
-          <Button
+          <Box
+            as="button"
             onClick={toggleLocale}
-            colorScheme={locale === "ko" ? "blue" : "gray"}
-            variant="outline"
-            borderColor={locale === "ko" ? "blue.500" : "gray.500"}
-            color={locale === "ko" ? "blue.500" : "gray.500"}
             _hover={{
               bg: locale === "ko" ? "blue.500" : "gray.500",
               color: "white",
@@ -49,7 +48,7 @@ const Header = () => {
             minWidth="70px"
           >
             {locale === "ko" ? "한국어" : "EN"}
-          </Button>
+          </Box>
         </Box>
       </Flex>
     </Box>
