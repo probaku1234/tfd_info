@@ -69,3 +69,7 @@ export interface MapData {
   map_name: string;
   battle_zone: BattleZone[];
 }
+
+export interface MapDataWithLocale extends MapData {
+  locale: 'ko' | 'en'
+}
