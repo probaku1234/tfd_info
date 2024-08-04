@@ -146,7 +146,7 @@ const ModulesPage: React.FC<ModulesPageProps> = ({ data }) => {
       <SEO
         title={translations.seo_title}
         description={translations.seo_description}
-        pathname="reward_rotation"
+        pathname="/modules"
       />
       <Box p={5} minH="100vh" width={"100%"}>
         <VStack spacing={4} mb={6}>

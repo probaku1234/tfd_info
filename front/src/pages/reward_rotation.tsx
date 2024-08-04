@@ -288,6 +288,7 @@ const RewardRotationPage = () => {
       <SEO
         title={translations.seo_title}
         description={translations.seo_description}
+        pathname={'/reward_rotation'}
       />
       <Box display="flex" overflow="hidden" width="70%">
         <VStack

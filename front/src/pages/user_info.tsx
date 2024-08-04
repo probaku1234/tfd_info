@@ -428,6 +428,7 @@ const UserInfoPage = () => {
       <SEO
         title={translations.seo_title}
         description={seoDescription}
+        pathname="/user_info"
       />
       <Box textAlign="center">
         <Heading as="h1" size="2xl" mb={4} textColor={"white"}>
