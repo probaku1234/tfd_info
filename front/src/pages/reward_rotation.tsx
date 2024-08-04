@@ -270,7 +270,7 @@ const RewardRotationPage = () => {
           }))
       )
     );
-  console.log(filteredRewards);
+    
   filteredRewards = filteredRewards.sort((a: any, b: any) => {
     if (sortBy === "reward_type") {
       return a.reward_type.localeCompare(b.reward_type);
