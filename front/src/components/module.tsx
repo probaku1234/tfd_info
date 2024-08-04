@@ -1,8 +1,7 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Box, Image, Text, HStack, Tooltip } from "@chakra-ui/react";
 import { Module } from "../types";
 import { navigate } from "gatsby";
-import LocaleContext from "../context/locale_context";
 
 interface ModuleProps {
   module: Module;
@@ -53,12 +52,22 @@ socketImageNameMap.set("세룰리안", "Cerulean.png");
 socketImageNameMap.set("알만딘", "Almandine.png");
 socketImageNameMap.set("말라카이트", "Malachite.png");
 socketImageNameMap.set("루틸", "Rutile.png");
+socketImageNameMap.set("Xantic", "Xantic.png");
+socketImageNameMap.set("Cerulean", "Cerulean.png");
+socketImageNameMap.set("Almandine", "Almandine.png");
+socketImageNameMap.set("Malachite", "Malachite.png");
+socketImageNameMap.set("Rutile", "Rutile.png");
 
 classImageNameMap.set("계승자", "module_descendant.png");
 classImageNameMap.set("일반탄", "module_general rounds.png");
 classImageNameMap.set("충격탄", "module_impact rounds.png");
 classImageNameMap.set("특수탄", "module_special rounds.png");
 classImageNameMap.set("고위력탄", "module_high-power rounds.png");
+classImageNameMap.set("Descendant", "module_descendant.png");
+classImageNameMap.set("General Rounds", "module_general rounds.png");
+classImageNameMap.set("Impact Rounds", "module_impact rounds.png");
+classImageNameMap.set("Special Rounds", "module_special rounds.png");
+classImageNameMap.set("High-Power Rounds", "module_high-power rounds.png");
 
 const ModuleComponent: React.FC<ModuleProps> = ({
   module,
@@ -66,9 +75,6 @@ const ModuleComponent: React.FC<ModuleProps> = ({
   showLevelBar = false,
   showTooltip = false,
 }) => {
-  const localeContext = useContext(LocaleContext);
-  const { locale } = localeContext!;
-
   const enchantLevelBar = () => {
     const maxLevel = module.module_stat.length - 1;
     const enchant = [];
@@ -126,9 +132,7 @@ const ModuleComponent: React.FC<ModuleProps> = ({
       >
         <Image
           src={
-            locale === "ko"
-              ? `/images/${socketImageNameMap.get(module.module_socket_type)}`
-              : `/images/${module.module_socket_type}.png`
+           `/images/${socketImageNameMap.get(module.module_socket_type)}`
           }
           alt={module.module_socket_type}
           width="24px"
@@ -166,9 +170,7 @@ const ModuleComponent: React.FC<ModuleProps> = ({
       <HStack spacing={1} mb={2}>
         <Image
           src={
-            locale === "ko"
-              ? `/images/${classImageNameMap.get(module.module_class)}`
-              : `/images/module_${module.module_class}.png`
+            `/images/${classImageNameMap.get(module.module_class)}`
           }
           alt={module.module_class}
           width="40px"
