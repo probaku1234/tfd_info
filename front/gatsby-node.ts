@@ -9,84 +9,107 @@ export const sourceNodes: GatsbyNode["sourceNodes"] = async ({ actions }) => {
   const { createNode } = actions;
 
   // Define URLs for the JSON data
-  const moduleUrl = "https://open.api.nexon.com/static/tfd/meta/ko/module.json";
-  const descendantUrl =
-    "https://open.api.nexon.com/static/tfd/meta/ko/descendant.json";
-  const rewardUrl = "https://open.api.nexon.com/static/tfd/meta/ko/reward.json";
+  const urls = {
+    ko: {
+      module: "https://open.api.nexon.com/static/tfd/meta/ko/module.json",
+      descendant:
+        "https://open.api.nexon.com/static/tfd/meta/ko/descendant.json",
+      reward: "https://open.api.nexon.com/static/tfd/meta/ko/reward.json",
+    },
+    en: {
+      module: "https://open.api.nexon.com/static/tfd/meta/en/module.json",
+      descendant:
+        "https://open.api.nexon.com/static/tfd/meta/en/descendant.json",
+      reward: "https://open.api.nexon.com/static/tfd/meta/en/reward.json",
+    },
+  };
 
-  try {
-    // Fetch and process module data
-    const moduleResponse = await axios.get<Module[]>(moduleUrl);
-    const modules = moduleResponse.data;
-
-    // Write module data to a file (optional)
-    const dataDir = path.join(__dirname, "src/data");
-    if (!fs.existsSync(dataDir)) {
-      fs.mkdirSync(dataDir);
-    }
-    fs.writeFileSync(
-      path.join(dataDir, "modules.json"),
-      JSON.stringify(modules)
-    );
-
-    // Create nodes for modules
-    modules.forEach((module) => {
-      createNode({
-        ...module,
-        id: module.module_id, // use module_id as the node ID
-        internal: {
-          type: "Module",
-          contentDigest: JSON.stringify(module),
-        },
-      });
-    });
-
-    // Fetch and process descendant data
-    const descendantResponse = await axios.get<Descendant[]>(descendantUrl);
-    const descendants = descendantResponse.data;
-
-    // Write descendant data to a file (optional)
-    fs.writeFileSync(
-      path.join(dataDir, "descendants.json"),
-      JSON.stringify(descendants)
-    );
-
-    // Create nodes for descendants
-    descendants.forEach((descendant) => {
-      createNode({
-        ...descendant,
-        id: descendant.descendant_id, // use descendant_id as the node ID
-        internal: {
-          type: "Descendant",
-          contentDigest: JSON.stringify(descendant),
-        },
-      });
-    });
-
-    // Fetch and process reward data
-    const rewardResponse = await axios.get<MapData[]>(rewardUrl);
-    const rewards = rewardResponse.data;
-
-    // Write reward data to a file (optional)
-    fs.writeFileSync(
-      path.join(dataDir, "rewards.json"),
-      JSON.stringify(rewards)
-    );
-
-    // Create nodes for rewards
-    rewards.forEach((map) => {
-      createNode({
-        ...map,
-        id: map.map_id, // Unique ID for each reward
-        internal: {
-          type: "Reward",
-          contentDigest: JSON.stringify(map),
-        },
-      });
-    });
-  } catch (error) {
-    console.error("Error fetching data:", error);
+  const dataDir = path.join(__dirname, "src/data");
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir);
   }
+
+  const fetchDataAndCreateNodes = async (locale: "ko" | "en") => {
+    try {
+      // Fetch and process module data
+      const moduleResponse = await axios.get<Module[]>(urls[locale].module);
+      const modules = moduleResponse.data;
+
+      fs.writeFileSync(
+        path.join(dataDir, `modules_${locale}.json`),
+        JSON.stringify(modules)
+      );
+
+      // Create nodes for modules
+      modules.forEach((module) => {
+        createNode({
+          ...module,
+          locale,
+          id: `${locale}_${module.module_id}`, // use locale and module_id as the node ID
+          internal: {
+            type: "Module",
+            contentDigest: JSON.stringify(module),
+          },
+        });
+      });
+
+      // Fetch and process descendant data
+      const descendantResponse = await axios.get<Descendant[]>(
+        urls[locale].descendant
+      );
+      const descendants = descendantResponse.data;
+
+      // Write descendant data to a file (optional)
+      fs.writeFileSync(
+        path.join(dataDir, `descendants_${locale}.json`),
+        JSON.stringify(descendants)
+      );
+
+      // Create nodes for descendants
+      descendants.forEach((descendant) => {
+        createNode({
+          ...descendant,
+          locale,
+          id: `${locale}_${descendant.descendant_id}`, // use locale and descendant_id as the node ID
+          internal: {
+            type: "Descendant",
+            contentDigest: JSON.stringify(descendant),
+          },
+        });
+      });
+
+      // Fetch and process reward data
+      const rewardResponse = await axios.get<MapData[]>(urls[locale].reward);
+      const rewards = rewardResponse.data;
+
+      // Write reward data to a file (optional)
+      fs.writeFileSync(
+        path.join(dataDir, `rewards_${locale}.json`),
+        JSON.stringify(rewards)
+      );
+
+      // Create nodes for rewards
+      rewards.forEach((map) => {
+        createNode({
+          ...map,
+          locale,
+          id: `${locale}_${map.map_id}`, // use locale and map_id as the node ID
+          internal: {
+            type: "Reward",
+            contentDigest: JSON.stringify(map),
+          },
+        });
+      });
+    } catch (error) {
+      console.error(`Error fetching ${locale} data:`, error);
+    }
+  };
+
+  // Fetch data and create nodes for both locales
+  await Promise.all([
+    fetchDataAndCreateNodes("ko"),
+    fetchDataAndCreateNodes("en"),
+  ]);
 };
 
 interface ModuleIds {
@@ -111,7 +134,7 @@ export const createPages: GatsbyNode["createPages"] = async ({
     }
   `);
 
-  (data as ModuleIds).allModule.nodes.forEach((node: { module_id: any }) => {
+  (data as ModuleIds).allModule.nodes.forEach((node: { module_id: string }) => {
     createPage({
       path: `/module/${node.module_id}`,
       component: path.resolve("./src/templates/module_detail.tsx"),

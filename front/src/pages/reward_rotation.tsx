@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { graphql, useStaticQuery, navigate } from "gatsby";
 import { DateTime, Interval } from "ts-luxon";
 import Layout from "../components/layout";
@@ -17,7 +17,15 @@ import {
 import { useLocation } from "@reach/router";
 import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
 import { SEO } from "../components/seo";
+import LocaleContext from "../context/locale_context";
+import { MapDataWithLocale, Reward, MapData } from "../types";
 import "./reward_rotation.css";
+
+interface AllRewardWithLocale {
+  allReward: {
+    nodes: MapDataWithLocale[];
+  };
+}
 
 const initialRotationStartDate = DateTime.fromMillis(1718694000000);
 const totalRotations = 20;
@@ -68,19 +76,19 @@ const calculateDurationBasedOnOffset = (offset: number) => {
 };
 
 function getRewardInfoByType(reward: any) {
-  if (reward.reward_type === "반응로") {
+  const imageName = rewardTypeNameMap.get(reward.reward_type as string);
+
+  if (reward.reward_type === "반응로" || reward.reward_type === "Reactor") {
     return (
       <>
-        <HStack justifyContent={'center'}>
+        <HStack justifyContent={"center"}>
           <Image
-            src={`/images/${rewardTypeNameMap.get(
-              reward.reward_type as string
-            )}`}
+            src={`/images/${imageName}`}
             alt={reward.reward_type as string}
             width="60px"
             height="60px"
           />
-          <Divider orientation='vertical' />
+          <Divider orientation="vertical" />
           <VStack>
             <Text>{reward.reactor_element_type}</Text>
             <Text>{reward.weapon_rounds_type}</Text>
@@ -91,9 +99,14 @@ function getRewardInfoByType(reward: any) {
     );
   } else {
     return (
-      <Box justifyContent={"center"} alignItems={"center"} display={'flex'} height={'60%'}>
+      <Box
+        justifyContent={"center"}
+        alignItems={"center"}
+        display={"flex"}
+        height={"60%"}
+      >
         <Image
-          src={`/images/${rewardTypeNameMap.get(reward.reward_type as string)}`}
+          src={`/images/${imageName}`}
           alt={reward.reward_type as string}
           width="60px"
           height="60px"
@@ -106,14 +119,22 @@ function getRewardInfoByType(reward: any) {
 const rewardTypeNameMap = new Map<string, string>();
 rewardTypeNameMap.set("반응로", "reactor.png");
 rewardTypeNameMap.set("메모리", "memory.png");
-rewardTypeNameMap.set("보조 전원", "power.png");
+rewardTypeNameMap.set("보조 전원", "auxiliary power.png");
 rewardTypeNameMap.set("센서", "sensor.png");
 rewardTypeNameMap.set("처리 장치", "processor.png");
+rewardTypeNameMap.set("Reactor", "reactor.png");
+rewardTypeNameMap.set("Memory", "memory.png");
+rewardTypeNameMap.set("Auxiliary Power", "auxiliary power.png");
+rewardTypeNameMap.set("Sensor", "sensor.png");
+rewardTypeNameMap.set("Processor", "processor.png");
 
 const RewardRotationPage = () => {
+  const localeContext = useContext(LocaleContext);
+  const { locale } = localeContext!;
   const currentRotation = calculateRotationNumber(DateTime.local());
+  const translations = translation[locale] || translation.en;
 
-  const data = useStaticQuery(graphql`
+  const data: AllRewardWithLocale = useStaticQuery(graphql`
     query {
       allReward(
         filter: { battle_zone: { elemMatch: { battle_zone_id: { ne: null } } } }
@@ -132,6 +153,7 @@ const RewardRotationPage = () => {
               arche_type
             }
           }
+          locale
         }
       }
     }
@@ -193,9 +215,15 @@ const RewardRotationPage = () => {
       const nextTuesday = calculateNextTuesday4PM();
       const diff = Interval.fromDateTimes(now, nextTuesday);
 
-      setTimeRemaining(
-        diff.toDuration(["days", "hours"]).toFormat("d일 hh시간")
-      );
+      const duration = diff.toDuration(["days", "hours"]);
+
+      if (locale === "ko") {
+        setTimeRemaining(duration.toFormat("d일 hh시간"));
+      } else {
+        const days = Math.floor(duration.days);
+        const hours = Math.floor(duration.hours);
+        setTimeRemaining(`${days}d ${hours}h`);
+      }
     }, 1000);
 
     return () => clearInterval(interval);
@@ -213,15 +241,19 @@ const RewardRotationPage = () => {
     }
   };
 
-  let filteredRewards = data.allReward.nodes
-    .filter((map: any) =>
+  const allRewardFilteredLocale = data.allReward.nodes.filter(
+    (map) => map.locale === locale
+  );
+
+  let filteredRewards = allRewardFilteredLocale
+    .filter((map) =>
       selectedMap !== "all" ? map.map_name === selectedMap : true
     )
-    .flatMap((map: any) =>
-      map.battle_zone.flatMap((zone: any) =>
+    .flatMap((map) =>
+      map.battle_zone.flatMap((zone) =>
         zone.reward
           .filter(
-            (reward: any) =>
+            (reward) =>
               reward.rotation === rotation &&
               (rewardType !== "all"
                 ? reward.reward_type === rewardType
@@ -234,7 +266,7 @@ const RewardRotationPage = () => {
                 : true) &&
               (archeType !== "all" ? reward.arche_type === archeType : true)
           )
-          .map((reward: any) => ({
+          .map((reward) => ({
             ...reward,
             map_name: map.map_name,
             battle_zone_name: zone.battle_zone_name,
@@ -253,6 +285,11 @@ const RewardRotationPage = () => {
 
   return (
     <Layout>
+      <SEO
+        title={translations.seo_title}
+        description={translations.seo_description}
+        pathname={'/reward_rotation'}
+      />
       <Box display="flex" overflow="hidden" width="70%">
         <VStack
           align="start"
@@ -273,9 +310,9 @@ const RewardRotationPage = () => {
             p={2}
             borderRadius="md"
           >
-            전체
+            {translations.all}
           </Text>
-          {data.allReward.nodes.map((map: any) => (
+          {allRewardFilteredLocale.map((map: any) => (
             <Text
               key={map.map_id}
               onClick={() => setSelectedMap(map.map_name)}
@@ -299,7 +336,7 @@ const RewardRotationPage = () => {
         >
           <Box mb={4}>
             <Text fontSize="lg" fontWeight="bold">
-              보상 변경까지 남은 시간: {timeRemaining}
+              {translations.time_remaining_message}: {timeRemaining}
             </Text>
             <Text>
               <ArrowLeftIcon
@@ -308,7 +345,7 @@ const RewardRotationPage = () => {
                 mr={2}
                 ml={2}
               />
-              {`로테이션: ${rotation}`}
+              {`${translations.rotation}: ${rotation}`}
               <ArrowRightIcon
                 cursor="pointer"
                 onClick={() => handleArrowClick(true)}
@@ -317,7 +354,7 @@ const RewardRotationPage = () => {
               />
 
               <Button onClick={() => setOffset(0)} size="sm">
-                현재 로테이션
+                {translations.current_rotation}
               </Button>
             </Text>
             <Text>{`${newDuration[0].toLocaleString()} ~ ${newDuration[1].toLocaleString()}`}</Text>
@@ -328,8 +365,10 @@ const RewardRotationPage = () => {
               onChange={(e) => setSortBy(e.target.value)}
               textColor="white"
             >
-              <option value="reward_type">정렬기준: 유형</option>
-              <option value="battle_zone_name">정렬기준: 전장</option>
+              <option value="reward_type">{translations.sort_by_type}</option>
+              <option value="battle_zone_name">
+                {translations.sort_by_battle_zone}
+              </option>
             </Select>
 
             <Select
@@ -337,11 +376,19 @@ const RewardRotationPage = () => {
               onChange={(e) => setWeaponRoundsType(e.target.value)}
               textColor="white"
             >
-              <option value="all">전체</option>
-              <option value="일반탄">일반탄</option>
-              <option value="특수탄">특수탄</option>
-              <option value="충격탄">충격탄</option>
-              <option value="고위력탄">고위력탄</option>
+              <option value="all">{translations.all}</option>
+              <option value={translations.general_rounds}>
+                {translations.general_rounds}
+              </option>
+              <option value={translations.special_rounds}>
+                {translations.special_rounds}
+              </option>
+              <option value={translations.impact_rounds}>
+                {translations.impact_rounds}
+              </option>
+              <option value={translations.high_power_rounds}>
+                {translations.high_power_rounds}
+              </option>
             </Select>
 
             <Select
@@ -349,12 +396,16 @@ const RewardRotationPage = () => {
               onChange={(e) => setReactorElementType(e.target.value)}
               textColor="white"
             >
-              <option value="all">전체</option>
-              <option value="무 속성">무 속성</option>
-              <option value="냉기">냉기</option>
-              <option value="독">독</option>
-              <option value="화염">화염</option>
-              <option value="전기">전기</option>
+              <option value="all">{translations.all}</option>
+              <option value={translations.non_attribute}>
+                {translations.non_attribute}
+              </option>
+              <option value={translations.chill}>{translations.chill}</option>
+              <option value={translations.toxic}>{translations.toxic}</option>
+              <option value={translations.fire}>{translations.fire}</option>
+              <option value={translations.electric}>
+                {translations.electric}
+              </option>
             </Select>
 
             <Select
@@ -362,11 +413,15 @@ const RewardRotationPage = () => {
               onChange={(e) => setArcheType(e.target.value)}
               textColor="white"
             >
-              <option value="all">전체</option>
-              <option value="융합">융합</option>
-              <option value="특이">특이</option>
-              <option value="차원">차원</option>
-              <option value="공학">공학</option>
+              <option value="all">{translations.all}</option>
+              <option value={translations.fusion}>{translations.fusion}</option>
+              <option value={translations.singular}>
+                {translations.singular}
+              </option>
+              <option value={translations.dimension}>
+                {translations.dimension}
+              </option>
+              <option value={translations.tech}>{translations.tech}</option>
             </Select>
 
             <Select
@@ -374,12 +429,18 @@ const RewardRotationPage = () => {
               onChange={(e) => setRewardType(e.target.value)}
               textColor="white"
             >
-              <option value="all">전체</option>
-              <option value="보조전원">보조전원</option>
-              <option value="센서">센서</option>
-              <option value="메모리">메모리</option>
-              <option value="처리 장치">처리 장치</option>
-              <option value="반응로">반응로</option>
+              <option value="all">{translations.all}</option>
+              <option value={translations.auxiliary_power}>
+                {translations.auxiliary_power}
+              </option>
+              <option value={translations.sensor}>{translations.sensor}</option>
+              <option value={translations.memory}>{translations.memory}</option>
+              <option value={translations.processor}>
+                {translations.processor}
+              </option>
+              <option value={translations.reactor}>
+                {translations.reactor}
+              </option>
             </Select>
           </HStack>
 
@@ -387,7 +448,7 @@ const RewardRotationPage = () => {
             {filteredRewards.length === 0 ? (
               <Text>No rewards found for this rotation.</Text>
             ) : (
-              filteredRewards.map((reward: any, index: number) => (
+              filteredRewards.map((reward, index: number) => (
                 <Box
                   key={index}
                   p={2}
@@ -413,9 +474,90 @@ const RewardRotationPage = () => {
 
 export default RewardRotationPage;
 
-export const Head = () => (
-  <SEO
-    title="난이도 보상 로테이션"
-    description="주간 난이도 보상 로테이션을 확인할 수 있습니다."
-  />
-);
+const translation: {
+  [key: string]: {
+    seo_title: string;
+    seo_description: string;
+    all: string;
+    reactor: string;
+    memory: string;
+    auxiliary_power: string;
+    sensor: string;
+    processor: string;
+    time_remaining_message: string;
+    rotation: string;
+    current_rotation: string;
+    sort_by_type: string;
+    sort_by_battle_zone: string;
+    non_attribute: string;
+    chill: string;
+    toxic: string;
+    fire: string;
+    electric: string;
+    fusion: string;
+    singular: string;
+    dimension: string;
+    tech: string;
+    general_rounds: string;
+    impact_rounds: string;
+    special_rounds: string;
+    high_power_rounds: string;
+  };
+} = {
+  ko: {
+    seo_title: "난이도 보상 로테이션",
+    seo_description: "주간 난이도 보상 로테이션을 확인할 수 있습니다.",
+    all: "전체",
+    reactor: "반응로",
+    memory: "메모리",
+    auxiliary_power: "보조전원",
+    sensor: "센서",
+    processor: "처리 장치",
+    time_remaining_message: "보상 변경까지 남은 시간",
+    rotation: "로테이션",
+    current_rotation: "현재 로테이션",
+    sort_by_type: "정렬기준: 유형",
+    sort_by_battle_zone: "정렬기준: 전장",
+    non_attribute: "무 속성",
+    chill: "냉기",
+    toxic: "독",
+    fire: "화염",
+    electric: "전기",
+    fusion: "융합",
+    singular: "특이",
+    dimension: "차원",
+    tech: "공학",
+    general_rounds: "일반탄",
+    impact_rounds: "충격탄",
+    special_rounds: "특수탄",
+    high_power_rounds: "고위력탄",
+  },
+  en: {
+    seo_title: "Difficulty Level Rewards",
+    seo_description: "You can check the weekly difficulty level rotation.",
+    all: "all",
+    reactor: "Reactor",
+    memory: "Memory",
+    auxiliary_power: "Auxiliary Power",
+    sensor: "Sensor",
+    processor: "processor",
+    time_remaining_message: "Time remaining until next reward rotation",
+    rotation: "Rotation",
+    current_rotation: "Current Rotation",
+    sort_by_type: "Sort by: Type",
+    sort_by_battle_zone: "Sort by: Battle Zone",
+    non_attribute: "Non-Attribute",
+    chill: "Chill",
+    toxic: "Toxic",
+    fire: "Fire",
+    electric: "Electric",
+    fusion: "Fusion",
+    singular: "Singular",
+    dimension: "Dimension",
+    tech: "Tech",
+    general_rounds: "General Rounds",
+    impact_rounds: "Impact Rounds",
+    special_rounds: "Special Rounds",
+    high_power_rounds: "High-Power Rounds",
+  },
+};
