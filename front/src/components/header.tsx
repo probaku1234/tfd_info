@@ -26,13 +26,13 @@ const Header = () => {
         </Box>
         <Flex flex="1" justify="center">
           <Link as={GatsbyLink} to="/user_info" mx={2}>
-            유저 정보 조회
+            {locale === 'ko' ? '유저 정보 조회': 'Search User Info'}
           </Link>
           <Link as={GatsbyLink} to="/reward_rotation" mx={2}>
-            난이도 보상 로테이션
+            {locale === 'ko' ? '난이도 보상 로테이션' : 'Difficulty Level Rewards'}
           </Link>
           <Link as={GatsbyLink} to="/modules" mx={2}>
-            모듈
+            {locale === 'ko' ? '모듈' : 'Module'}
           </Link>
         </Flex>
         <Box>
