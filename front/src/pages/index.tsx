@@ -44,10 +44,10 @@ const IndexPage = () => {
             opacity="0"
             animation={`${fadeIn} 2s ease forwards 1s`} // Delay text fade-in to start after image blur begins
           >
-            <Heading as="h1" size="2xl" mb={4}>
+            <Heading as="h1" size="4xl" mb={4}>
               {welcome_title}
             </Heading>
-            <Text fontSize="xl" mb={4}>
+            <Text fontSize="2xl" mb={4}>
               {welcome_message}
             </Text>
           </Box>
