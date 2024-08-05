@@ -510,9 +510,9 @@ const translation: {
   };
 } = {
   ko: {
-    seo_title: "유저 정보 검색",
+    seo_title: "퍼스트 디센던트 유저 정보 검색",
     seo_description:
-      "유저 {user_name}의 장착 계승자 정보를 확인 할 수 있습니다.",
+      "퍼스트 디센던트 유저 {user_name}의 장착 계승자 정보입니다. 해당 유저가 사용하는 모듈과 무기, 반응로, 외장부품을 살펴보세요.",
     head: "유저 정보 검색",
     search_placeholder: "닉네임#1234",
     search_button: "검색",
@@ -521,9 +521,9 @@ const translation: {
     capacity: "모듈 수용량",
   },
   en: {
-    seo_title: "Search For User Information",
+    seo_title: "TFD Search For User Information",
     seo_description:
-      "You can check the equipped descendant information for user {user_name}.",
+      "TFD User {user_name}'s equipped descendant information. Explore the modules, weapons, reactors, and external parts used by the user.",
     head: "Search For User Information",
     search_placeholder: "Nickname#1234",
     search_button: "Search",
