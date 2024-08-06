@@ -505,7 +505,7 @@ const translation: {
   };
 } = {
   ko: {
-    seo_title: "난이도 보상 로테이션",
+    seo_title: "퍼스트 디센던트 난이도 보상 로테이션",
     seo_description: "퍼스트 디센던트 현재와 그 이후의 주간 난이도 보상 로테이션을 확인하세요.",
     all: "전체",
     reactor: "반응로",
@@ -533,7 +533,7 @@ const translation: {
     high_power_rounds: "고위력탄",
   },
   en: {
-    seo_title: "Difficulty Level Rewards",
+    seo_title: "TFD Difficulty Level Rewards",
     seo_description: "TFD Check out the current and subsequent weekly difficulty reward rotation.",
     all: "all",
     reactor: "Reactor",
