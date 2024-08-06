@@ -94,8 +94,8 @@ interface AllReactorsData {
 }
 
 interface UserCombinedReactorDataWithLocale {
-  "ko": UserReactor & ReactorWithLocale;
-  "en": UserReactor & ReactorWithLocale;
+  ko: UserReactor & ReactorWithLocale;
+  en: UserReactor & ReactorWithLocale;
 }
 
 const API_BASE_URL =
@@ -552,8 +552,10 @@ const UserInfoPage = () => {
     );
   };
 
-  const reactorData: (UserReactor & ReactorWithLocale) | null  = userReactorData ? userReactorData[locale as keyof UserCombinedReactorDataWithLocale] : null;
-  
+  const reactorData: (UserReactor & ReactorWithLocale) | null = userReactorData
+    ? userReactorData[locale as keyof UserCombinedReactorDataWithLocale]
+    : null;
+
   return (
     <Layout>
       <SEO
@@ -624,9 +626,7 @@ const UserInfoPage = () => {
                     >
                       <Image
                         src={reactorData?.image_url}
-                        bg={getImageBgColor(
-                          reactorData?.reactor_tier || ""
-                        )}
+                        bg={getImageBgColor(reactorData?.reactor_tier || "")}
                       />
                       <HStack>
                         <Box
