@@ -15,8 +15,10 @@ const gatsbyRequiredRules = path.join(
 const config: GatsbyConfig = {
   siteMetadata: {
     title: "TFD Info",
-    description:
-      "퍼스트 디센던트 유저 계승자, 다음 보상 로테이션, 모듈등 여러 정보들을 확인할 수 있습니다.",
+    descriptions: {
+      ko: "퍼스트 디센던트와 관련된 다양한 정보를 제공합니다. 유저 계승자, 다음 보상 로테이션, 모듈등 여러 정보들을 확인해 보세요!",
+      en: "Provides various information related to The First Descendant. Check user descendants, next reward rotation, modules, and more!",
+    },
     image: "/favicon-32x32.png",
     siteUrl: `https://tfd-info.vercel.app/`,
     keywords: [

@@ -1,5 +1,6 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useContext } from "react";
 import { useSiteMetadata } from "../hooks/use-site-metadata";
+import LocaleContext from "../context/locale_context";
 
 interface SEOProps {
   title?: string;
@@ -14,9 +15,12 @@ export const SEO: React.FC<SEOProps> = ({
   pathname,
   children,
 }) => {
+  const localeContext = useContext(LocaleContext);
+  const { locale } = localeContext!;
+
   const {
     title: defaultTitle,
-    description: defaultDescription,
+    descriptions,
     image,
     siteUrl,
     keywords,
@@ -24,7 +28,7 @@ export const SEO: React.FC<SEOProps> = ({
 
   const seo = {
     title: title || defaultTitle,
-    description: description || defaultDescription,
+    description: description || descriptions[locale],
     image: `${siteUrl}${image}`,
     url: `${siteUrl}${pathname || ``}`,
     keywords,

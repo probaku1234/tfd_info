@@ -506,7 +506,7 @@ const translation: {
 } = {
   ko: {
     seo_title: "난이도 보상 로테이션",
-    seo_description: "주간 난이도 보상 로테이션을 확인할 수 있습니다.",
+    seo_description: "퍼스트 디센던트 현재와 그 이후의 주간 난이도 보상 로테이션을 확인하세요.",
     all: "전체",
     reactor: "반응로",
     memory: "메모리",
@@ -534,7 +534,7 @@ const translation: {
   },
   en: {
     seo_title: "Difficulty Level Rewards",
-    seo_description: "You can check the weekly difficulty level rotation.",
+    seo_description: "TFD Check out the current and subsequent weekly difficulty reward rotation.",
     all: "all",
     reactor: "Reactor",
     memory: "Memory",

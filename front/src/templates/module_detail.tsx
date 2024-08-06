@@ -129,12 +129,12 @@ const translation: {
   [key: string]: { seo_description: string; level: string; capacity: string };
 } = {
   ko: {
-    seo_description: "모듈 {module_name}의 상세 정보입니다.",
+    seo_description: "퍼스트 디센던트의 {module_name} 모듈에 대한 통계, 기술 및 스케일링 세부 정보를 확인해보세요.",
     level: "강화 레벨",
     capacity: "수용량",
   },
   en: {
-    seo_description: "Detailed information about the module {module_name}.",
+    seo_description: "Discover the stats, skills, and scaling details for the module {module_name} in The First Descendant.",
     level: "Enchant Level",
     capacity: "Capacity",
   },

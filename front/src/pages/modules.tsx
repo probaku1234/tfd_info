@@ -364,8 +364,8 @@ const translation: {
     malachite: "말라카이트",
     rutile: "루틸",
     search_placeholder: "검색",
-    seo_title: "모듈 리스트",
-    seo_description: "모든 모듈들의 리스트입니다.",
+    seo_title: "퍼스트 디센던트 모듈 리스트",
+    seo_description: "희귀도와 유형을 포함한 퍼스트 디센던트 모듈의 전체 목록을 확인해보세요. 강화 레벨에 따른 상세한 퍼스트 디센던트 모듈 통계를 볼 수 있습니다.",
   },
   en: {
     all: "all",
@@ -384,7 +384,8 @@ const translation: {
     malachite: "Malachite",
     rutile: "Rutile",
     search_placeholder: "Search by stats or name",
-    seo_title: "Module List",
-    seo_description: "This page shows all modules",
+    seo_title: "TFD Modules List",
+    seo_description:
+      "Discover the complete list of The First Descendant modules, including rarity and type. Explore detailed TFD module stats with enchant level.",
   },
 };

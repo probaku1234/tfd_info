@@ -2,7 +2,7 @@ import axios from "axios";
 import fs from "fs";
 import path from "path";
 import { GatsbyNode } from "gatsby";
-import { Descendant, MapData, Module } from "./src/types";
+import { Descendant, MapData, Module, Reactor } from "./src/types";
 
 // Define the Gatsby sourceNodes API
 export const sourceNodes: GatsbyNode["sourceNodes"] = async ({ actions }) => {
@@ -15,12 +15,14 @@ export const sourceNodes: GatsbyNode["sourceNodes"] = async ({ actions }) => {
       descendant:
         "https://open.api.nexon.com/static/tfd/meta/ko/descendant.json",
       reward: "https://open.api.nexon.com/static/tfd/meta/ko/reward.json",
+      reactor: "https://open.api.nexon.com/static/tfd/meta/ko/reactor.json",
     },
     en: {
       module: "https://open.api.nexon.com/static/tfd/meta/en/module.json",
       descendant:
         "https://open.api.nexon.com/static/tfd/meta/en/descendant.json",
       reward: "https://open.api.nexon.com/static/tfd/meta/en/reward.json",
+      reactor: "https://open.api.nexon.com/static/tfd/meta/en/reactor.json",
     },
   };
 
@@ -97,6 +99,28 @@ export const sourceNodes: GatsbyNode["sourceNodes"] = async ({ actions }) => {
           internal: {
             type: "Reward",
             contentDigest: JSON.stringify(map),
+          },
+        });
+      });
+
+      // Fetch and process reactor data
+      const reactorResponse = await axios.get<Reactor[]>(urls[locale].reactor);
+      const reactors = reactorResponse.data;
+
+      // Write reward data to a file (optional)
+      fs.writeFileSync(
+        path.join(dataDir, `reactors_${locale}.json`),
+        JSON.stringify(reactors)
+      );
+
+      reactors.forEach((reactor) => {
+        createNode({
+          ...reactor,
+          locale,
+          id: `${locale}_${reactor.reactor_id}`, // use locale and map_id as the node ID
+          internal: {
+            type: "Reactor",
+            contentDigest: JSON.stringify(reactor),
           },
         });
       });
