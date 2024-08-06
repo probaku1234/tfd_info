@@ -2,7 +2,15 @@ import axios from "axios";
 import fs from "fs";
 import path from "path";
 import { GatsbyNode } from "gatsby";
-import { Descendant, MapData, Module, Reactor } from "./src/types";
+import {
+  Descendant,
+  MapData,
+  Module,
+  Reactor,
+  ExternalComponent,
+  Weapon,
+  Stat,
+} from "./src/types";
 
 // Define the Gatsby sourceNodes API
 export const sourceNodes: GatsbyNode["sourceNodes"] = async ({ actions }) => {
@@ -16,6 +24,10 @@ export const sourceNodes: GatsbyNode["sourceNodes"] = async ({ actions }) => {
         "https://open.api.nexon.com/static/tfd/meta/ko/descendant.json",
       reward: "https://open.api.nexon.com/static/tfd/meta/ko/reward.json",
       reactor: "https://open.api.nexon.com/static/tfd/meta/ko/reactor.json",
+      external_component:
+        "https://open.api.nexon.com/static/tfd/meta/ko/external-component.json",
+      weapon: "https://open.api.nexon.com/static/tfd/meta/ko/weapon.json",
+      stat: "https://open.api.nexon.com/static/tfd/meta/ko/stat.json",
     },
     en: {
       module: "https://open.api.nexon.com/static/tfd/meta/en/module.json",
@@ -23,6 +35,10 @@ export const sourceNodes: GatsbyNode["sourceNodes"] = async ({ actions }) => {
         "https://open.api.nexon.com/static/tfd/meta/en/descendant.json",
       reward: "https://open.api.nexon.com/static/tfd/meta/en/reward.json",
       reactor: "https://open.api.nexon.com/static/tfd/meta/en/reactor.json",
+      external_component:
+        "https://open.api.nexon.com/static/tfd/meta/en/external-component.json",
+      weapon: "https://open.api.nexon.com/static/tfd/meta/en/weapon.json",
+      stat: "https://open.api.nexon.com/static/tfd/meta/en/stat.json",
     },
   };
 
@@ -121,6 +137,68 @@ export const sourceNodes: GatsbyNode["sourceNodes"] = async ({ actions }) => {
           internal: {
             type: "Reactor",
             contentDigest: JSON.stringify(reactor),
+          },
+        });
+      });
+
+      const externalComponentResponse = await axios.get<ExternalComponent[]>(
+        urls[locale].external_component
+      );
+      const externalComponents = externalComponentResponse.data;
+
+      fs.writeFileSync(
+        path.join(dataDir, `externalComponents_${locale}.json`),
+        JSON.stringify(externalComponents)
+      );
+
+      externalComponents.forEach((externalComponent) => {
+        createNode({
+          ...externalComponent,
+          locale,
+          id: `${locale}_${externalComponent.external_component_id}`,
+          internal: {
+            type: "ExternalComponents",
+            contentDigest: JSON.stringify(externalComponent),
+          },
+        });
+      });
+
+      const weaponResponse = await axios.get<Weapon[]>(urls[locale].weapon);
+      const weapons = weaponResponse.data;
+
+      fs.writeFileSync(
+        path.join(dataDir, `weapons_${locale}.json`),
+        JSON.stringify(weapons)
+      );
+
+      weapons.forEach((weapon) => {
+        createNode({
+          ...weapon,
+          locale,
+          id: `${locale}_${weapon.weapon_id}`,
+          internal: {
+            type: "Weapon",
+            contentDigest: JSON.stringify(weapon),
+          },
+        });
+      });
+
+      const statResponse = await axios.get<Stat[]>(urls[locale].stat);
+      const stats = statResponse.data;
+
+      fs.writeFileSync(
+        path.join(dataDir, `stats_${locale}.json`),
+        JSON.stringify(stats)
+      );
+
+      stats.forEach((stat) => {
+        createNode({
+          ...stat,
+          locale,
+          id: `${locale}_${stat.stat_id}`,
+          internal: {
+            type: "Stat",
+            contentDigest: JSON.stringify(stat),
           },
         });
       });
