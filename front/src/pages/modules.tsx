@@ -69,7 +69,7 @@ const ModulesPage: React.FC<ModulesPageProps> = ({ data }) => {
   const [socket, setSocket] = useState<string>(
     searchParams.get("socket") || "all"
   );
-  const [filteredModules, setFilteredModules] = useState(modules);
+  const [filteredModules, setFilteredModules] = useState<ModuleWithLocale[]>([]);
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -315,7 +315,7 @@ const ModulesPage: React.FC<ModulesPageProps> = ({ data }) => {
 
         <SimpleGrid columns={{ sm: 1, md: 2, lg: 3, xl: 7 }} spacing={5}>
           {filteredModules.map((module) => (
-            <ModuleComponent module={module} />
+            <ModuleComponent module={module} key={`${module.module_id}/${locale}`}/>
           ))}
         </SimpleGrid>
       </Box>

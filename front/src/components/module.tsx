@@ -88,8 +88,9 @@ const ModuleComponent: React.FC<ModuleProps> = ({
 
     return (
       <>
-        {enchant.map((value) => (
+        {enchant.map((value, index) => (
           <Box
+            key={index}
             bg={value === "empty" ? "#334155" : "#d1b700"}
             border="1px solid #000"
             borderRadius={"3px"}
@@ -104,7 +105,6 @@ const ModuleComponent: React.FC<ModuleProps> = ({
 
   return (
     <Box
-      key={module.module_id}
       bg="gray.700"
       border="1px solid"
       borderRadius="md"

@@ -710,6 +710,7 @@ const UserInfoPage = () => {
                     <SimpleGrid columns={6} spacing={3}>
                       {moduleSlotIds.map((id) => (
                         <Box
+                          key={id}
                           border={"1px solid #627185"}
                           borderRadius={"5px"}
                           display={"flex"}
