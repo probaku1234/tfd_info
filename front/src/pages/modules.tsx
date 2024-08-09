@@ -313,7 +313,7 @@ const ModulesPage: React.FC<ModulesPageProps> = ({ data }) => {
           </HStack>
         </VStack>
 
-        <SimpleGrid columns={{ sm: 1, md: 2, lg: 3, xl: 4 }} spacing={5}>
+        <SimpleGrid columns={{ sm: 1, md: 2, lg: 3, xl: 7 }} spacing={5}>
           {filteredModules.map((module) => (
             <ModuleComponent module={module} />
           ))}
