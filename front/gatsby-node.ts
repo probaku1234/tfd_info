@@ -157,7 +157,7 @@ export const sourceNodes: GatsbyNode["sourceNodes"] = async ({ actions }) => {
           locale,
           id: `${locale}_${externalComponent.external_component_id}`,
           internal: {
-            type: "ExternalComponents",
+            type: "ExternalComponent",
             contentDigest: JSON.stringify(externalComponent),
           },
         });
