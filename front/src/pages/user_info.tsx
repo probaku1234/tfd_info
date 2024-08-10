@@ -24,6 +24,7 @@ import {
   AccordionButton,
   AccordionPanel,
   AccordionIcon,
+  Tooltip,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { navigate, graphql, useStaticQuery } from "gatsby";
@@ -33,6 +34,7 @@ import {
   ModuleWithLocale,
   ReactorWithLocale,
   StatWithLocale,
+  WeaponWithLocale,
 } from "../types";
 import ModuleComponent from "../components/module";
 import { SEO } from "../components/seo";
@@ -94,6 +96,20 @@ interface UserExternalComponent {
   }[];
 }
 
+interface UserWeapon {
+  module_max_capacity: number;
+  module_capacity: number;
+  weapon_slot_id: string;
+  weapon_id: string;
+  weapon_level: number;
+  perk_ability_enchant_level: number;
+  weapon_additional_stat: {
+    additional_stat_name: string;
+    additional_stat_value: string;
+  }[];
+  module: DescendantModule[];
+}
+
 interface AllDescendantsData {
   nodes: Pick<
     DescendantWithLocale,
@@ -116,6 +132,10 @@ interface AllStatsData {
   nodes: StatWithLocale[];
 }
 
+interface AllWeaponData {
+  nodes: WeaponWithLocale[];
+}
+
 interface UserCombinedReactorDataWithLocale {
   ko: UserReactor & ReactorWithLocale;
   en: UserReactor & ReactorWithLocale;
@@ -132,6 +152,11 @@ interface UserCombinedExternalComponentsDataWithLocale {
   )[];
 }
 
+interface UserCombinedWeaponDataWithLocale {
+  ko: (UserWeapon & WeaponWithLocale)[];
+  en: (UserWeapon & WeaponWithLocale)[];
+}
+
 const API_BASE_URL =
   process.env.NODE_ENV == "development"
     ? process.env.NEXON_API_BASE_URL
@@ -140,7 +165,7 @@ const API_KEY =
   process.env.NODE_ENV == "development"
     ? process.env.NEXON_API_KEY
     : process.env.GATSBY_NEXON_API_KEY;
-const moduleSlotIds = [
+const descendantModuleSlotIds = [
   "Skill 1",
   "Main 1",
   "Main 3",
@@ -154,6 +179,7 @@ const moduleSlotIds = [
   "Main 8",
   "Main 10",
 ];
+const weaponModuleSlotIds = ["1", "3", "5", "7", "9", "2", "4", "6", "8", "10"];
 
 const getImageBgColor = (tier: string) => {
   switch (tier) {
@@ -185,6 +211,8 @@ const UserInfoPage = () => {
     useState<UserCombinedReactorDataWithLocale | null>(null);
   const [userExternalComponentData, setUserExternalComponentData] =
     useState<UserCombinedExternalComponentsDataWithLocale | null>(null);
+  const [userWeaponData, setUserWeaponData] =
+    useState<UserCombinedWeaponDataWithLocale | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [descendantData, setDescendantData] = useState(null);
   const [userName, setUserName] = useState<string | null>(
@@ -197,6 +225,7 @@ const UserInfoPage = () => {
     allReactor,
     allExternalComponent,
     allStat,
+    allWeapon,
   } = useStaticQuery(graphql`
     query {
       allDescendant {
@@ -263,6 +292,27 @@ const UserInfoPage = () => {
         nodes {
           stat_id
           stat_name
+          locale
+        }
+      }
+      allWeapon {
+        nodes {
+          weapon_id
+          weapon_name
+          image_url
+          weapon_type
+          weapon_tier
+          weapon_rounds_type
+          firearm_atk {
+            level
+            firearm {
+              firearm_atk_type
+              firearm_atk_value
+            }
+          }
+          weapon_perk_ability_name
+          weapon_perk_ability_description
+          weapon_perk_ability_image_url
           locale
         }
       }
@@ -428,10 +478,51 @@ const UserInfoPage = () => {
       }
     };
 
+    const fetchWeaponData = async () => {
+      try {
+        const [userWeaponKoResponse, userWeaponEnResponse] = await Promise.all([
+          axios.get("tfd/v1/user/weapon", {
+            headers: {
+              "x-nxopen-api-key": API_KEY,
+            },
+            baseURL: API_BASE_URL,
+            params: { ouid: userOUId, language_code: "ko" },
+          }),
+          axios.get("tfd/v1/user/weapon", {
+            headers: {
+              "x-nxopen-api-key": API_KEY,
+            },
+            baseURL: API_BASE_URL,
+            params: { ouid: userOUId, language_code: "en" },
+          }),
+        ]);
+
+        const weaponKoData = userWeaponKoResponse.data;
+        const weaponEnData = userWeaponEnResponse.data;
+
+        const combinedData = {
+          ko: (weaponKoData.weapon as UserWeapon[]).map((data) => ({
+            ...data,
+            ...getWeaponData(data.weapon_id, "ko")!,
+          })),
+          en: (weaponEnData.weapon as UserWeapon[]).map((data) => ({
+            ...data,
+            ...getWeaponData(data.weapon_id, "en")!,
+          })),
+        };
+        setUserWeaponData(combinedData);
+      } catch (err) {
+        setError(`Failed to fetch user data ${err}`);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (userOUId) {
       fetchUserData();
       fetchReactorData();
       fetchExternalComponentsData();
+      fetchWeaponData();
     }
   }, [userOUId]);
 
@@ -478,6 +569,12 @@ const UserInfoPage = () => {
   const getStatData = (statId: string) => {
     return (allStat as AllStatsData).nodes.find(
       (stat) => stat.stat_id === statId && stat.locale === locale
+    );
+  };
+
+  const getWeaponData = (weaponId: string, locale: "ko" | "en") => {
+    return (allWeapon as AllWeaponData).nodes.find(
+      (weapon) => weapon.weapon_id === weaponId && weapon.locale === locale
     );
   };
 
@@ -558,7 +655,7 @@ const UserInfoPage = () => {
     );
   }
 
-  const moudleBox = (slotId: string) => {
+  const descendantModuleBox = (slotId: string) => {
     const moduleOnSlot = userData?.module.find(
       (module) => (module as DescendantModule).module_slot_id === slotId
     );
@@ -570,6 +667,20 @@ const UserInfoPage = () => {
         showLevelBar
         showTooltip
       />
+    ) : (
+      <Image src={`/images/module.png`} />
+    );
+  };
+
+  const weaponModuleBox = (slotId: string, weaponIndex: number) => {
+    const moduleOnSlotId = weaponData
+      ?.at(weaponIndex)
+      ?.module.find((module) => module.module_slot_id === slotId);
+
+    const moduleOnSlot = getModuleData(moduleOnSlotId?.module_id || "");
+
+    return moduleOnSlot ? (
+      <ModuleComponent module={moduleOnSlot as ModuleWithLocale} />
     ) : (
       <Image src={`/images/module.png`} />
     );
@@ -630,6 +741,10 @@ const UserInfoPage = () => {
         locale as keyof UserCombinedExternalComponentsDataWithLocale
       ]
     : null;
+  const weaponData: (UserWeapon & WeaponWithLocale)[] | null = userWeaponData
+    ? userWeaponData[locale as keyof UserCombinedWeaponDataWithLocale]
+    : null;
+    
   const setEffectMap: {
     [key: string]: {
       [key: number]: string;
@@ -703,12 +818,17 @@ const UserInfoPage = () => {
                   <Tab textColor={"white"}>
                     {translations.external_component}
                   </Tab>
+                  {weaponData?.map((weapon) => (
+                    <Tab key={weapon.weapon_slot_id} textColor={"white"}>
+                      {translations.weapon} {weapon.weapon_slot_id}
+                    </Tab>
+                  ))}
                 </TabList>
 
                 <TabPanels>
                   <TabPanel>
                     <SimpleGrid columns={6} spacing={3}>
-                      {moduleSlotIds.map((id) => (
+                      {descendantModuleSlotIds.map((id) => (
                         <Box
                           key={id}
                           border={"1px solid #627185"}
@@ -719,7 +839,7 @@ const UserInfoPage = () => {
                           minHeight={"153px"}
                           alignContent={"center"}
                         >
-                          {moudleBox(id)}
+                          {descendantModuleBox(id)}
                         </Box>
                       ))}
                     </SimpleGrid>
@@ -916,6 +1036,104 @@ const UserInfoPage = () => {
                       {setEffectBox()}
                     </Box>
                   </TabPanel>
+                  {weaponData?.map((weapon, index) => (
+                    <TabPanel key={weapon.weapon_id}>
+                      <HStack spacing={8}>
+                        <Image
+                          src={weapon.image_url}
+                          bg={getImageBgColor(weapon.weapon_tier)}
+                          alt={weapon.weapon_name}
+                        />
+                        <Box textColor={"white"}>
+                          <HStack>
+                            <Box
+                              alignItems={"center"}
+                              border="1px solid #fff"
+                              display={"flex"}
+                              justifyContent={"center"}
+                              transform={"rotate(45deg)"}
+                              height={"37px"}
+                              width={"37px"}
+                              mr={1}
+                            >
+                              <Text transform={"rotate(-45deg)"}>
+                                {weapon?.weapon_level}
+                              </Text>
+                            </Box>
+                            <Heading>{weapon?.weapon_name}</Heading>
+                          </HStack>
+                          <Text>
+                            {weapon?.weapon_type} {weapon?.weapon_rounds_type}
+                          </Text>
+                          <HStack justifyContent="space-between" width="100%">
+                            <Text fontSize="2xl">
+                              {
+                                getStatData(
+                                  weapon?.firearm_atk?.at(
+                                    weapon.weapon_level - 1
+                                  )?.firearm[0].firearm_atk_type!
+                                )?.stat_name
+                              }
+                            </Text>
+                            <Text fontSize="2xl">
+                              {
+                                weapon?.firearm_atk?.at(weapon.weapon_level - 1)
+                                  ?.firearm[0].firearm_atk_value
+                              }
+                            </Text>
+                          </HStack>
+                          {weapon?.weapon_additional_stat.map((stat) => (
+                            <HStack
+                              key={stat.additional_stat_name}
+                              justifyContent="space-between"
+                              width="100%"
+                            >
+                              <Text fontSize="2xl">
+                                {stat.additional_stat_name}
+                              </Text>
+                              <Text fontSize="2xl">
+                                {stat.additional_stat_value}
+                              </Text>
+                            </HStack>
+                          ))}
+                          {weapon?.weapon_perk_ability_name ? (
+                            <HStack>
+                              <Tooltip
+                                label={weapon.weapon_perk_ability_description}
+                              >
+                                <Image
+                                  src={weapon.weapon_perk_ability_image_url}
+                                  alt={weapon.weapon_perk_ability_name}
+                                />
+                              </Tooltip>
+                              <Text fontSize="2xl">
+                                {weapon.weapon_perk_ability_name}
+                              </Text>
+                            </HStack>
+                          ) : (
+                            <></>
+                          )}
+                        </Box>
+                      </HStack>
+                      <Divider mb={3}/>
+                      <SimpleGrid columns={5} spacing={2}>
+                        {weaponModuleSlotIds.map((id) => (
+                          <Box
+                            key={id}
+                            border={"1px solid #627185"}
+                            borderRadius={"5px"}
+                            display={"flex"}
+                            justifyContent={"center"}
+                            maxWidth={"152px"}
+                            minHeight={"153px"}
+                            alignContent={"center"}
+                          >
+                            {weaponModuleBox(id, index)}
+                          </Box>
+                        ))}
+                      </SimpleGrid>
+                    </TabPanel>
+                  ))}
                 </TabPanels>
               </Tabs>
             </HStack>
@@ -946,6 +1164,7 @@ const translation: {
     optimized_condition: string;
     external_component: string;
     set_effect: string;
+    weapon: string;
   };
 } = {
   ko: {
@@ -964,6 +1183,7 @@ const translation: {
     optimized_condition: "최적화 조건",
     external_component: "외장 부품",
     set_effect: "세트 효과",
+    weapon: "무기",
   },
   en: {
     seo_title: "TFD Search For User Information",
@@ -981,5 +1201,6 @@ const translation: {
     optimized_condition: "Optimized Condition",
     external_component: "External Component",
     set_effect: "Set Effect",
+    weapon: "Weapon",
   },
 };
