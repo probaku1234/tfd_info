@@ -25,6 +25,10 @@ import {
   AccordionPanel,
   AccordionIcon,
   Tooltip,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { navigate, graphql, useStaticQuery } from "gatsby";
@@ -680,7 +684,12 @@ const UserInfoPage = () => {
     const moduleOnSlot = getModuleData(moduleOnSlotId?.module_id || "");
 
     return moduleOnSlot ? (
-      <ModuleComponent module={moduleOnSlot as ModuleWithLocale} />
+      <ModuleComponent
+        module={moduleOnSlot as ModuleWithLocale}
+        level={moduleOnSlotId?.module_enchant_level}
+        showLevelBar
+        showTooltip
+      />
     ) : (
       <Image src={`/images/module.png`} />
     );
@@ -744,7 +753,7 @@ const UserInfoPage = () => {
   const weaponData: (UserWeapon & WeaponWithLocale)[] | null = userWeaponData
     ? userWeaponData[locale as keyof UserCombinedWeaponDataWithLocale]
     : null;
-    
+
   const setEffectMap: {
     [key: string]: {
       [key: number]: string;
@@ -786,21 +795,39 @@ const UserInfoPage = () => {
           {userData ? `` : translations.head}
         </Heading>
         {!query.get("user_name") ? (
-          <Box as="form" onSubmit={handleSearch}>
-            <Flex justify="center">
-              <Input
-                placeholder={translations.search_placeholder}
-                value={userName || ""}
-                onChange={(e) => setUserName(e.target.value)}
-                width="300px"
-                mr={2}
-                textColor={"white"}
-              />
-              <Button type="submit" colorScheme="teal">
-                {translations.search_button}
-              </Button>
+          <>
+            <Box as="form" onSubmit={handleSearch}>
+              <Flex justify="center">
+                <Input
+                  placeholder={translations.search_placeholder}
+                  value={userName || ""}
+                  onChange={(e) => setUserName(e.target.value)}
+                  width="300px"
+                  mr={2}
+                  textColor={"white"}
+                />
+                <Button type="submit" colorScheme="gray">
+                  {translations.search_button}
+                </Button>
+              </Flex>
+            </Box>
+            <Flex mt={4} justify={"center"}>
+              <Alert
+                status="info"
+                width={"70%"}
+                bg={"#d7d7d7"}
+                borderRadius={"10px"}
+              >
+                <AlertIcon />
+                <Box>
+                  <AlertTitle>{translations.info_title}</AlertTitle>
+                  <AlertDescription>
+                    {translations.info_message}
+                  </AlertDescription>
+                </Box>
+              </Alert>
             </Flex>
-          </Box>
+          </>
         ) : loading ? (
           <Spinner size="xl" />
         ) : error ? (
@@ -1043,8 +1070,9 @@ const UserInfoPage = () => {
                           src={weapon.image_url}
                           bg={getImageBgColor(weapon.weapon_tier)}
                           alt={weapon.weapon_name}
+                          width={"50%"}
                         />
-                        <Box textColor={"white"}>
+                        <Box textColor={"white"} width={"50%"}>
                           <HStack>
                             <Box
                               alignItems={"center"}
@@ -1115,7 +1143,7 @@ const UserInfoPage = () => {
                           )}
                         </Box>
                       </HStack>
-                      <Divider mb={3}/>
+                      <Divider mb={3} />
                       <SimpleGrid columns={5} spacing={2}>
                         {weaponModuleSlotIds.map((id) => (
                           <Box
@@ -1165,6 +1193,8 @@ const translation: {
     external_component: string;
     set_effect: string;
     weapon: string;
+    info_title: string;
+    info_message: string;
   };
 } = {
   ko: {
@@ -1184,6 +1214,9 @@ const translation: {
     external_component: "외장 부품",
     set_effect: "세트 효과",
     weapon: "무기",
+    info_title: "현재 장착중인 계승자와 모듈, 무기, 외장 부품을 보여줍니다.",
+    info_message:
+      "참고: 이 페이지에 표시되는 정보는 유저의 로드아웃 변경에 따라 언제든지 달라질 수 있습니다. 최신 상태를 확인하려면 페이지를 새로고침하세요.",
   },
   en: {
     seo_title: "TFD Search For User Information",
@@ -1202,5 +1235,8 @@ const translation: {
     external_component: "External Component",
     set_effect: "Set Effect",
     weapon: "Weapon",
+    info_title: "Displays the currently equipped Descendant, Module, Weapon, and External Components.",
+    info_message:
+      "Note: The information displayed on this page may change at any time based on the user's loadout changes. Please refresh the page to view the most up-to-date information.",
   },
 };
