@@ -2,12 +2,14 @@ import React from "react";
 import { Box, Image, Text, HStack, Tooltip } from "@chakra-ui/react";
 import { Module } from "../types";
 import { navigate } from "gatsby";
+import * as userInfoStyles from '../pages/use_info.module.css';
 
 interface ModuleProps {
   module: Module;
   level?: number;
   showLevelBar?: boolean;
   showTooltip?: boolean;
+  forModuleGrid?: boolean;
 }
 
 const tierColorMap = new Map<string, string>();
@@ -74,6 +76,7 @@ const ModuleComponent: React.FC<ModuleProps> = ({
   level = 0,
   showLevelBar = false,
   showTooltip = false,
+  forModuleGrid = false,
 }) => {
   const enchantLevelBar = () => {
     const maxLevel = module.module_stat.length - 1;
@@ -88,8 +91,9 @@ const ModuleComponent: React.FC<ModuleProps> = ({
 
     return (
       <>
-        {enchant.map((value) => (
+        {enchant.map((value, index) => (
           <Box
+            key={index}
             bg={value === "empty" ? "#334155" : "#d1b700"}
             border="1px solid #000"
             borderRadius={"3px"}
@@ -104,7 +108,7 @@ const ModuleComponent: React.FC<ModuleProps> = ({
 
   return (
     <Box
-      key={module.module_id}
+      className={forModuleGrid ? userInfoStyles.module_grid : ""}
       bg="gray.700"
       border="1px solid"
       borderRadius="md"
@@ -131,9 +135,7 @@ const ModuleComponent: React.FC<ModuleProps> = ({
         top="-0.5%"
       >
         <Image
-          src={
-           `/images/${socketImageNameMap.get(module.module_socket_type)}`
-          }
+          src={`/images/${socketImageNameMap.get(module.module_socket_type)}`}
           alt={module.module_socket_type}
           width="24px"
           height="24px"
@@ -169,9 +171,7 @@ const ModuleComponent: React.FC<ModuleProps> = ({
       </Text>
       <HStack spacing={1} mb={2}>
         <Image
-          src={
-            `/images/${classImageNameMap.get(module.module_class)}`
-          }
+          src={`/images/${classImageNameMap.get(module.module_class)}`}
           alt={module.module_class}
           width="40px"
           height="40px"

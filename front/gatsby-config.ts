@@ -93,6 +93,7 @@ const config: GatsbyConfig = {
     },
     `gatsby-transformer-json`,
     "gatsby-plugin-sitemap",
+    'gatsby-plugin-dts-css-modules',
   ],
 };
 

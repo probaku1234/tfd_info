@@ -101,3 +101,62 @@ export interface Reactor {
 export interface ReactorWithLocale extends Reactor {
   locale: "ko" | "en";
 }
+
+export interface ExternalComponent {
+  external_component_id: string;
+  external_component_name: string;
+  image_url: string;
+  external_component_equipment_type: string;
+  external_component_tier: string;
+  base_stat: {
+    level: number;
+    stat_id: string;
+    stat_value: number;
+  }[];
+  set_option_detail: {
+    set_option: string;
+    set_count: number;
+    set_option_effect: string;
+  }[];
+}
+
+export interface ExternalComponentWithLocale extends ExternalComponent {
+  locale: "ko" | "en";
+}
+
+export interface Weapon {
+  weapon_name: string;
+  weapon_id: string;
+  image_url: string;
+  weapon_type: string;
+  weapon_tier: string;
+  weapon_rounds_type: string;
+  base_stat: {
+    stat_id: string;
+    stat_value: number;
+  }[];
+  firearm_atk: {
+    level: number;
+    firearm: {
+      firearm_atk_type: string;
+      firearm_atk_value: number;
+    }[];
+  }[];
+  weapon_perk_ability_name?: string;
+  weapon_perk_ability_description?: string;
+  weapon_perk_ability_image_url?: string;
+}
+
+export interface WeaponWithLocale extends Weapon {
+  locale: "ko" | "en";
+}
+
+export interface Stat {
+  stat_id: string;
+  stat_name: string;
+}
+
+export interface StatWithLocale extends Stat {
+  locale: "ko" | "en";
+}
+
