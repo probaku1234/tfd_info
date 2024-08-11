@@ -18,3 +18,11 @@ a {
 p {
   font-family: "Do Hyeon" !important;
 }
+
+.module_grid {
+  height: 90%;
+}
+
+.module_slot_box {
+  height: 10%;
+}

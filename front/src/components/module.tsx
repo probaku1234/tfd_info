@@ -8,6 +8,7 @@ interface ModuleProps {
   level?: number;
   showLevelBar?: boolean;
   showTooltip?: boolean;
+  forModuleGrid?: boolean;
 }
 
 const tierColorMap = new Map<string, string>();
@@ -74,6 +75,7 @@ const ModuleComponent: React.FC<ModuleProps> = ({
   level = 0,
   showLevelBar = false,
   showTooltip = false,
+  forModuleGrid = false,
 }) => {
   const enchantLevelBar = () => {
     const maxLevel = module.module_stat.length - 1;
@@ -105,6 +107,7 @@ const ModuleComponent: React.FC<ModuleProps> = ({
 
   return (
     <Box
+      className={forModuleGrid ? "module_grid" : ""}
       bg="gray.700"
       border="1px solid"
       borderRadius="md"
@@ -131,9 +134,7 @@ const ModuleComponent: React.FC<ModuleProps> = ({
         top="-0.5%"
       >
         <Image
-          src={
-           `/images/${socketImageNameMap.get(module.module_socket_type)}`
-          }
+          src={`/images/${socketImageNameMap.get(module.module_socket_type)}`}
           alt={module.module_socket_type}
           width="24px"
           height="24px"
@@ -169,9 +170,7 @@ const ModuleComponent: React.FC<ModuleProps> = ({
       </Text>
       <HStack spacing={1} mb={2}>
         <Image
-          src={
-            `/images/${classImageNameMap.get(module.module_class)}`
-          }
+          src={`/images/${classImageNameMap.get(module.module_class)}`}
           alt={module.module_class}
           width="40px"
           height="40px"

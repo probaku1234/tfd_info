@@ -201,6 +201,17 @@ const getImageBgColor = (tier: string) => {
   }
 };
 
+const getBoxShadowByModuleSlotId = (slotId: string) => {
+  switch (slotId) {
+    case "Sub 1":
+      return "0 -5px 25px 0 rgba(170,56,27,.8)";
+    case "Skill 1":
+      return "0 -5px 25px 0 rgba(50, 180, 104, .8)";
+    default:
+      return "";
+  }
+};
+
 const UserInfoPage = () => {
   const localeContext = useContext(LocaleContext);
   const { locale } = localeContext!;
@@ -659,20 +670,42 @@ const UserInfoPage = () => {
     );
   }
 
+  const moduleSlotIdBox = (slotId: string) => {
+    return (
+      <Box
+        boxShadow={getBoxShadowByModuleSlotId(slotId)}
+        className="module_slot_box"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        position={"relative"}
+      >
+        <Text textColor={"white"}>{slotId}</Text>
+      </Box>
+    );
+  };
+
   const descendantModuleBox = (slotId: string) => {
     const moduleOnSlot = userData?.module.find(
       (module) => (module as DescendantModule).module_slot_id === slotId
     );
 
     return moduleOnSlot ? (
-      <ModuleComponent
-        module={moduleOnSlot as ModuleWithLocale}
-        level={(moduleOnSlot as DescendantModule).module_enchant_level}
-        showLevelBar
-        showTooltip
-      />
+      <Box>
+        <ModuleComponent
+          module={moduleOnSlot as ModuleWithLocale}
+          level={(moduleOnSlot as DescendantModule).module_enchant_level}
+          showLevelBar
+          showTooltip
+          forModuleGrid
+        />
+        {moduleSlotIdBox(slotId)}
+      </Box>
     ) : (
-      <Image src={`/images/module.png`} />
+      <Box>
+        <Image src={`/images/module.png`} className="module_grid" />
+        {moduleSlotIdBox(slotId)}
+      </Box>
     );
   };
 
@@ -684,14 +717,21 @@ const UserInfoPage = () => {
     const moduleOnSlot = getModuleData(moduleOnSlotId?.module_id || "");
 
     return moduleOnSlot ? (
-      <ModuleComponent
-        module={moduleOnSlot as ModuleWithLocale}
-        level={moduleOnSlotId?.module_enchant_level}
-        showLevelBar
-        showTooltip
-      />
+      <Box>
+        <ModuleComponent
+          module={moduleOnSlot as ModuleWithLocale}
+          level={moduleOnSlotId?.module_enchant_level}
+          showLevelBar
+          showTooltip
+          forModuleGrid
+        />
+        {moduleSlotIdBox(slotId)}
+      </Box>
     ) : (
-      <Image src={`/images/module.png`} />
+      <Box>
+        <Image src={`/images/module.png`} className="module_grid" />
+        {moduleSlotIdBox(slotId)}
+      </Box>
     );
   };
 
@@ -1235,7 +1275,8 @@ const translation: {
     external_component: "External Component",
     set_effect: "Set Effect",
     weapon: "Weapon",
-    info_title: "Displays the currently equipped Descendant, Module, Weapon, and External Components.",
+    info_title:
+      "Displays the currently equipped Descendant, Module, Weapon, and External Components.",
     info_message:
       "Note: The information displayed on this page may change at any time based on the user's loadout changes. Please refresh the page to view the most up-to-date information.",
   },
