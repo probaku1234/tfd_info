@@ -42,6 +42,7 @@ import {
 } from "../types";
 import ModuleComponent from "../components/module";
 import { SEO } from "../components/seo";
+import * as useInfoStyles from "./use_info.module.css";
 import LocaleContext from "../context/locale_context";
 
 interface DescendantModule {
@@ -674,7 +675,7 @@ const UserInfoPage = () => {
     return (
       <Box
         boxShadow={getBoxShadowByModuleSlotId(slotId)}
-        className="module_slot_box"
+        className={useInfoStyles.module_slot_box}
         display="flex"
         alignItems="center"
         justifyContent="center"
@@ -703,7 +704,7 @@ const UserInfoPage = () => {
       </Box>
     ) : (
       <Box>
-        <Image src={`/images/module.png`} className="module_grid" />
+        <Image src={`/images/module.png`} className={useInfoStyles.module_grid} />
         {moduleSlotIdBox(slotId)}
       </Box>
     );
@@ -729,7 +730,7 @@ const UserInfoPage = () => {
       </Box>
     ) : (
       <Box>
-        <Image src={`/images/module.png`} className="module_grid" />
+        <Image src={`/images/module.png`} className={useInfoStyles.module_grid} />
         {moduleSlotIdBox(slotId)}
       </Box>
     );

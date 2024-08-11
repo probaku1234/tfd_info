@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Image, Text, HStack, Tooltip } from "@chakra-ui/react";
 import { Module } from "../types";
 import { navigate } from "gatsby";
+import * as userInfoStyles from '../pages/use_info.module.css';
 
 interface ModuleProps {
   module: Module;
@@ -107,7 +108,7 @@ const ModuleComponent: React.FC<ModuleProps> = ({
 
   return (
     <Box
-      className={forModuleGrid ? "module_grid" : ""}
+      className={forModuleGrid ? userInfoStyles.module_grid : ""}
       bg="gray.700"
       border="1px solid"
       borderRadius="md"

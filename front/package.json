@@ -53,6 +53,7 @@
     "eslint": "^8.57.0",
     "eslint-plugin-react": "^7.35.0",
     "eslint-webpack-plugin": "^4.2.0",
+    "gatsby-plugin-dts-css-modules": "^3.0.0",
     "gatsby-plugin-eslint": "^4.0.4",
     "globals": "^15.8.0",
     "typescript": "^5.5.4",
