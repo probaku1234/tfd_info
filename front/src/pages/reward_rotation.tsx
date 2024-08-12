@@ -13,12 +13,17 @@ import {
   Button,
   Divider,
   Image,
+  Wrap,
+  WrapItem,
+  FormControl,
+  FormLabel,
 } from "@chakra-ui/react";
 import { useLocation } from "@reach/router";
 import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
 import { SEO } from "../components/seo";
 import LocaleContext from "../context/locale_context";
 import { MapDataWithLocale, Reward, MapData } from "../types";
+import { StaticImage } from "gatsby-plugin-image";
 import "./reward_rotation.css";
 
 interface AllRewardWithLocale {
@@ -288,7 +293,7 @@ const RewardRotationPage = () => {
       <SEO
         title={translations.seo_title}
         description={translations.seo_description}
-        pathname={'/reward_rotation'}
+        pathname={"/reward_rotation"}
       />
       <Box display="flex" overflow="hidden" width="70%">
         <VStack
@@ -297,7 +302,7 @@ const RewardRotationPage = () => {
           bg="gray.50"
           p={4}
           borderRadius="md"
-          flex="0 0 250px"
+          flex="0 1 200px"
           overflowY="auto"
           height="fit-content"
         >
@@ -359,92 +364,133 @@ const RewardRotationPage = () => {
             </Text>
             <Text>{`${newDuration[0].toLocaleString()} ~ ${newDuration[1].toLocaleString()}`}</Text>
           </Box>
-          <HStack spacing={4} width="100%">
-            <Select
-              defaultValue={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              textColor="white"
-            >
-              <option value="reward_type">{translations.sort_by_type}</option>
-              <option value="battle_zone_name">
-                {translations.sort_by_battle_zone}
-              </option>
-            </Select>
+          <Wrap spacing={4} width="100%">
+            <WrapItem>
+              <FormControl>
+                <FormLabel mb={0}>{translations.label_sort}</FormLabel>
+                <Select
+                  defaultValue={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  textColor="white"
+                >
+                  <option value="reward_type">
+                    {translations.sort_by_type}
+                  </option>
+                  <option value="battle_zone_name">
+                    {translations.sort_by_battle_zone}
+                  </option>
+                </Select>
+              </FormControl>
+            </WrapItem>
 
-            <Select
-              defaultValue={weaponRoundsType}
-              onChange={(e) => setWeaponRoundsType(e.target.value)}
-              textColor="white"
-            >
-              <option value="all">{translations.all}</option>
-              <option value={translations.general_rounds}>
-                {translations.general_rounds}
-              </option>
-              <option value={translations.special_rounds}>
-                {translations.special_rounds}
-              </option>
-              <option value={translations.impact_rounds}>
-                {translations.impact_rounds}
-              </option>
-              <option value={translations.high_power_rounds}>
-                {translations.high_power_rounds}
-              </option>
-            </Select>
+            <WrapItem>
+              <FormControl>
+                <FormLabel mb={0}>{translations.label_rounds_type}</FormLabel>
+                <Select
+                  defaultValue={weaponRoundsType}
+                  onChange={(e) => setWeaponRoundsType(e.target.value)}
+                  textColor="white"
+                >
+                  <option value="all">{translations.all}</option>
+                  <option value={translations.general_rounds}>
+                    {translations.general_rounds}
+                  </option>
+                  <option value={translations.special_rounds}>
+                    {translations.special_rounds}
+                  </option>
+                  <option value={translations.impact_rounds}>
+                    {translations.impact_rounds}
+                  </option>
+                  <option value={translations.high_power_rounds}>
+                    {translations.high_power_rounds}
+                  </option>
+                </Select>
+              </FormControl>
+            </WrapItem>
 
-            <Select
-              defaultValue={reactorElementType}
-              onChange={(e) => setReactorElementType(e.target.value)}
-              textColor="white"
-            >
-              <option value="all">{translations.all}</option>
-              <option value={translations.non_attribute}>
-                {translations.non_attribute}
-              </option>
-              <option value={translations.chill}>{translations.chill}</option>
-              <option value={translations.toxic}>{translations.toxic}</option>
-              <option value={translations.fire}>{translations.fire}</option>
-              <option value={translations.electric}>
-                {translations.electric}
-              </option>
-            </Select>
+            <WrapItem>
+              <FormControl>
+                <FormLabel mb={0}>{translations.label_element_type}</FormLabel>
+                <Select
+                  defaultValue={reactorElementType}
+                  onChange={(e) => setReactorElementType(e.target.value)}
+                  textColor="white"
+                >
+                  <option value="all">{translations.all}</option>
+                  <option value={translations.non_attribute}>
+                    {translations.non_attribute}
+                  </option>
+                  <option value={translations.chill}>
+                    {translations.chill}
+                  </option>
+                  <option value={translations.toxic}>
+                    {translations.toxic}
+                  </option>
+                  <option value={translations.fire}>{translations.fire}</option>
+                  <option value={translations.electric}>
+                    {translations.electric}
+                  </option>
+                </Select>
+              </FormControl>
+            </WrapItem>
 
-            <Select
-              defaultValue={archeType}
-              onChange={(e) => setArcheType(e.target.value)}
-              textColor="white"
-            >
-              <option value="all">{translations.all}</option>
-              <option value={translations.fusion}>{translations.fusion}</option>
-              <option value={translations.singular}>
-                {translations.singular}
-              </option>
-              <option value={translations.dimension}>
-                {translations.dimension}
-              </option>
-              <option value={translations.tech}>{translations.tech}</option>
-            </Select>
+            <WrapItem>
+              <FormControl>
+                <FormLabel mb={0}>{translations.label_arche_type}</FormLabel>
+                <Select
+                  defaultValue={archeType}
+                  onChange={(e) => setArcheType(e.target.value)}
+                  textColor="white"
+                >
+                  <option value="all">{translations.all}</option>
+                  <option value={translations.fusion}>
+                    {translations.fusion}
+                  </option>
+                  <option value={translations.singular}>
+                    {translations.singular}
+                  </option>
+                  <option value={translations.dimension}>
+                    {translations.dimension}
+                  </option>
+                  <option value={translations.tech}>{translations.tech}</option>
+                </Select>
+              </FormControl>
+            </WrapItem>
 
-            <Select
-              defaultValue={rewardType}
-              onChange={(e) => setRewardType(e.target.value)}
-              textColor="white"
-            >
-              <option value="all">{translations.all}</option>
-              <option value={translations.auxiliary_power}>
-                {translations.auxiliary_power}
-              </option>
-              <option value={translations.sensor}>{translations.sensor}</option>
-              <option value={translations.memory}>{translations.memory}</option>
-              <option value={translations.processor}>
-                {translations.processor}
-              </option>
-              <option value={translations.reactor}>
-                {translations.reactor}
-              </option>
-            </Select>
-          </HStack>
+            <WrapItem>
+              <FormControl>
+                <FormLabel mb={0}>{translations.label_reward_type}</FormLabel>
+                <Select
+                  defaultValue={rewardType}
+                  onChange={(e) => setRewardType(e.target.value)}
+                  textColor="white"
+                >
+                  <option value="all">{translations.all}</option>
+                  <option value={translations.auxiliary_power}>
+                    {translations.auxiliary_power}
+                  </option>
+                  <option value={translations.sensor}>
+                    {translations.sensor}
+                  </option>
+                  <option value={translations.memory}>
+                    {translations.memory}
+                  </option>
+                  <option value={translations.processor}>
+                    {translations.processor}
+                  </option>
+                  <option value={translations.reactor}>
+                    {translations.reactor}
+                  </option>
+                </Select>
+              </FormControl>
+            </WrapItem>
+          </Wrap>
 
-          <SimpleGrid columns={3} spacing={4} width="100%">
+          <SimpleGrid
+            columns={{ sm: 1, md: 2, xl: 5 }}
+            spacing={4}
+            width="100%"
+          >
             {filteredRewards.length === 0 ? (
               <Text>No rewards found for this rotation.</Text>
             ) : (
@@ -502,11 +548,17 @@ const translation: {
     impact_rounds: string;
     special_rounds: string;
     high_power_rounds: string;
+    label_sort: string;
+    label_rounds_type: string;
+    label_element_type: string;
+    label_arche_type: string;
+    label_reward_type: string;
   };
 } = {
   ko: {
     seo_title: "퍼스트 디센던트 난이도 보상 로테이션",
-    seo_description: "퍼스트 디센던트 현재와 그 이후의 주간 난이도 보상 로테이션을 확인하세요.",
+    seo_description:
+      "퍼스트 디센던트 현재와 그 이후의 주간 난이도 보상 로테이션을 확인하세요.",
     all: "전체",
     reactor: "반응로",
     memory: "메모리",
@@ -531,16 +583,22 @@ const translation: {
     impact_rounds: "충격탄",
     special_rounds: "특수탄",
     high_power_rounds: "고위력탄",
+    label_sort: "정렬 유형",
+    label_rounds_type: "탄 유형",
+    label_element_type: "속성",
+    label_arche_type: "아르케 유형",
+    label_reward_type: "보상 유형",
   },
   en: {
     seo_title: "TFD Difficulty Level Rewards",
-    seo_description: "TFD Check out the current and subsequent weekly difficulty reward rotation.",
+    seo_description:
+      "TFD Check out the current and subsequent weekly difficulty reward rotation.",
     all: "all",
     reactor: "Reactor",
     memory: "Memory",
     auxiliary_power: "Auxiliary Power",
     sensor: "Sensor",
-    processor: "processor",
+    processor: "Processor",
     time_remaining_message: "Time remaining until next reward rotation",
     rotation: "Rotation",
     current_rotation: "Current Rotation",
@@ -559,5 +617,10 @@ const translation: {
     impact_rounds: "Impact Rounds",
     special_rounds: "Special Rounds",
     high_power_rounds: "High-Power Rounds",
+    label_sort: "Sort Type",
+    label_rounds_type: "Rounds Type",
+    label_element_type: "Element Type",
+    label_arche_type: "Arche Type",
+    label_reward_type: "Reward Type",
   },
 };

@@ -11,6 +11,8 @@ import {
   IconButton,
   Wrap,
   WrapItem,
+  FormLabel,
+  FormControl,
 } from "@chakra-ui/react";
 import { debounce } from "lodash";
 import { SEO } from "../components/seo";
@@ -156,177 +158,192 @@ const ModulesPage: React.FC<ModulesPageProps> = ({ data }) => {
         <VStack spacing={4} mb={6}>
           <Wrap spacing={4} w="100%" justify="space-between">
             <WrapItem flex={1}>
-              <Input
-                placeholder={translations.search_placeholder}
-                defaultValue={searchKeyword || ""}
-                bg="gray.700"
-                border="none"
-                color="white"
-                onChange={handleSearchInputChange}
-              />
+              <FormControl>
+                <FormLabel mb={0}>{translations.label_search}</FormLabel>
+                <Input
+                  placeholder={translations.search_placeholder}
+                  defaultValue={searchKeyword || ""}
+                  bg="gray.700"
+                  border="none"
+                  color="white"
+                  onChange={handleSearchInputChange}
+                />
+              </FormControl>
             </WrapItem>
             <WrapItem>
-              <Select
-                defaultValue={tier}
-                onChange={(e) => setTier(e.target.value)}
-                bg="gray.700"
-                border="none"
-                color="white"
-              >
-                <option value={"all"}>{translations.all}</option>
-                <option
-                  style={{ color: "#2895bb" }}
-                  value={translations.standard}
+              <FormControl>
+                <FormLabel mb={0}>{translations.label_tier}</FormLabel>
+                <Select
+                  defaultValue={tier}
+                  onChange={(e) => setTier(e.target.value)}
+                  bg="gray.700"
+                  border="none"
+                  color="white"
                 >
-                  {translations.standard}
-                </option>
-                <option style={{ color: "#864ab7" }} value={translations.rare}>
-                  {translations.rare}
-                </option>
-                <option
-                  style={{ color: "#bf9138" }}
-                  value={translations.ultimate}
-                >
-                  {translations.ultimate}
-                </option>
-                <option
-                  style={{ color: "#b1543f" }}
-                  value={translations.transcendent}
-                >
-                  {translations.transcendent}
-                </option>
-                {/* 추가 옵션들 */}
-              </Select>
+                  <option value={"all"}>{translations.all}</option>
+                  <option
+                    style={{ color: "#2895bb" }}
+                    value={translations.standard}
+                  >
+                    {translations.standard}
+                  </option>
+                  <option
+                    style={{ color: "#864ab7" }}
+                    value={translations.rare}
+                  >
+                    {translations.rare}
+                  </option>
+                  <option
+                    style={{ color: "#bf9138" }}
+                    value={translations.ultimate}
+                  >
+                    {translations.ultimate}
+                  </option>
+                  <option
+                    style={{ color: "#b1543f" }}
+                    value={translations.transcendent}
+                  >
+                    {translations.transcendent}
+                  </option>
+                  {/* 추가 옵션들 */}
+                </Select>
+              </FormControl>
             </WrapItem>
             <WrapItem>
-              <HStack spacing={2}>
-                <IconButton
-                  aria-label="Filter by class"
-                  onClick={() =>
-                    onHandleClassIconClick(translations.descendant)
-                  }
-                  icon={
-                    <Image
-                      src="/images/module_descendant.png"
-                      alt={translations.descendant}
-                    />
-                  }
-                  bg="gray.700"
-                  border={"1px solid"}
-                  borderColor={
-                    moduleClass === translations.descendant
-                      ? selectedBorderColor
-                      : borderColor
-                  }
-                  _hover={{ bg: "gray.600" }}
-                />
-                <IconButton
-                  aria-label="Filter by class"
-                  onClick={() =>
-                    onHandleClassIconClick(translations.general_rounds)
-                  }
-                  icon={
-                    <Image
-                      src="/images/module_general rounds.png"
-                      alt={translations.general_rounds}
-                    />
-                  }
-                  bg="gray.700"
-                  border={"1px solid"}
-                  borderColor={
-                    moduleClass === translations.general_rounds
-                      ? selectedBorderColor
-                      : borderColor
-                  }
-                  _hover={{ bg: "gray.600" }}
-                />
-                <IconButton
-                  aria-label="Filter by class"
-                  onClick={() =>
-                    onHandleClassIconClick(translations.impact_rounds)
-                  }
-                  icon={
-                    <Image
-                      src="/images/module_impact rounds.png"
-                      alt={translations.impact_rounds}
-                    />
-                  }
-                  bg="gray.700"
-                  border={"1px solid"}
-                  borderColor={
-                    moduleClass === translations.impact_rounds
-                      ? selectedBorderColor
-                      : borderColor
-                  }
-                  _hover={{ bg: "gray.600" }}
-                />
-                <IconButton
-                  aria-label="Filter by class"
-                  onClick={() =>
-                    onHandleClassIconClick(translations.special_rounds)
-                  }
-                  icon={
-                    <Image
-                      src="/images/module_special rounds.png"
-                      alt={translations.special_rounds}
-                    />
-                  }
-                  bg="gray.700"
-                  border={"1px solid"}
-                  borderColor={
-                    moduleClass === translations.special_rounds
-                      ? selectedBorderColor
-                      : borderColor
-                  }
-                  _hover={{ bg: "gray.600" }}
-                />
-                <IconButton
-                  aria-label="Filter by class"
-                  onClick={() =>
-                    onHandleClassIconClick(translations.high_power_rounds)
-                  }
-                  icon={
-                    <Image
-                      src="/images/module_high-power rounds.png"
-                      alt={translations.high_power_rounds}
-                    />
-                  }
-                  bg="gray.700"
-                  border={"1px solid"}
-                  borderColor={
-                    moduleClass === translations.high_power_rounds
-                      ? selectedBorderColor
-                      : borderColor
-                  }
-                  _hover={{ bg: "gray.600" }}
-                />
-              </HStack>
+              <FormControl>
+                <FormLabel mb={0}>{translations.label_round_type}</FormLabel>
+                <HStack spacing={2}>
+                  <IconButton
+                    aria-label="Filter by class"
+                    onClick={() =>
+                      onHandleClassIconClick(translations.descendant)
+                    }
+                    icon={
+                      <Image
+                        src="/images/module_descendant.png"
+                        alt={translations.descendant}
+                      />
+                    }
+                    bg="gray.700"
+                    border={"1px solid"}
+                    borderColor={
+                      moduleClass === translations.descendant
+                        ? selectedBorderColor
+                        : borderColor
+                    }
+                    _hover={{ bg: "gray.600" }}
+                  />
+                  <IconButton
+                    aria-label="Filter by class"
+                    onClick={() =>
+                      onHandleClassIconClick(translations.general_rounds)
+                    }
+                    icon={
+                      <Image
+                        src="/images/module_general rounds.png"
+                        alt={translations.general_rounds}
+                      />
+                    }
+                    bg="gray.700"
+                    border={"1px solid"}
+                    borderColor={
+                      moduleClass === translations.general_rounds
+                        ? selectedBorderColor
+                        : borderColor
+                    }
+                    _hover={{ bg: "gray.600" }}
+                  />
+                  <IconButton
+                    aria-label="Filter by class"
+                    onClick={() =>
+                      onHandleClassIconClick(translations.impact_rounds)
+                    }
+                    icon={
+                      <Image
+                        src="/images/module_impact rounds.png"
+                        alt={translations.impact_rounds}
+                      />
+                    }
+                    bg="gray.700"
+                    border={"1px solid"}
+                    borderColor={
+                      moduleClass === translations.impact_rounds
+                        ? selectedBorderColor
+                        : borderColor
+                    }
+                    _hover={{ bg: "gray.600" }}
+                  />
+                  <IconButton
+                    aria-label="Filter by class"
+                    onClick={() =>
+                      onHandleClassIconClick(translations.special_rounds)
+                    }
+                    icon={
+                      <Image
+                        src="/images/module_special rounds.png"
+                        alt={translations.special_rounds}
+                      />
+                    }
+                    bg="gray.700"
+                    border={"1px solid"}
+                    borderColor={
+                      moduleClass === translations.special_rounds
+                        ? selectedBorderColor
+                        : borderColor
+                    }
+                    _hover={{ bg: "gray.600" }}
+                  />
+                  <IconButton
+                    aria-label="Filter by class"
+                    onClick={() =>
+                      onHandleClassIconClick(translations.high_power_rounds)
+                    }
+                    icon={
+                      <Image
+                        src="/images/module_high-power rounds.png"
+                        alt={translations.high_power_rounds}
+                      />
+                    }
+                    bg="gray.700"
+                    border={"1px solid"}
+                    borderColor={
+                      moduleClass === translations.high_power_rounds
+                        ? selectedBorderColor
+                        : borderColor
+                    }
+                    _hover={{ bg: "gray.600" }}
+                  />
+                </HStack>
+              </FormControl>
             </WrapItem>
             <WrapItem>
-              <Select
-                defaultValue={socket}
-                onChange={(e) => setSocket(e.target.value)}
-                bg="gray.700"
-                border="none"
-                color="white"
-              >
-                <option value="all">{translations.all}</option>
-                <option value={translations.xantic}>
-                  {translations.xantic}
-                </option>
-                <option value={translations.cerulean}>
-                  {translations.cerulean}
-                </option>
-                <option value={translations.almandine}>
-                  {translations.almandine}
-                </option>
-                <option value={translations.malachite}>
-                  {translations.malachite}
-                </option>
-                <option value={translations.rutile}>
-                  {translations.rutile}
-                </option>
-              </Select>
+              <FormControl>
+                <FormLabel mb={0}>{translations.label_socket_type}</FormLabel>
+                <Select
+                  defaultValue={socket}
+                  onChange={(e) => setSocket(e.target.value)}
+                  bg="gray.700"
+                  border="none"
+                  color="white"
+                >
+                  <option value="all">{translations.all}</option>
+                  <option value={translations.xantic}>
+                    {translations.xantic}
+                  </option>
+                  <option value={translations.cerulean}>
+                    {translations.cerulean}
+                  </option>
+                  <option value={translations.almandine}>
+                    {translations.almandine}
+                  </option>
+                  <option value={translations.malachite}>
+                    {translations.malachite}
+                  </option>
+                  <option value={translations.rutile}>
+                    {translations.rutile}
+                  </option>
+                </Select>
+              </FormControl>
             </WrapItem>
           </Wrap>
         </VStack>
@@ -364,6 +381,10 @@ const translation: {
     malachite: string;
     rutile: string;
     search_placeholder: string;
+    label_search: string;
+    label_tier: string;
+    label_round_type: string;
+    label_socket_type: string;
     seo_title: string;
     seo_description: string;
   };
@@ -385,6 +406,10 @@ const translation: {
     malachite: "말라카이트",
     rutile: "루틸",
     search_placeholder: "검색",
+    label_search: "검색",
+    label_tier:"등급",
+    label_round_type: "탄 유형",
+    label_socket_type: "소켓 유형",
     seo_title: "퍼스트 디센던트 모듈 리스트",
     seo_description:
       "희귀도와 유형을 포함한 퍼스트 디센던트 모듈의 전체 목록을 확인해보세요. 강화 레벨에 따른 상세한 퍼스트 디센던트 모듈 통계를 볼 수 있습니다.",
@@ -406,6 +431,10 @@ const translation: {
     malachite: "Malachite",
     rutile: "Rutile",
     search_placeholder: "Search by stats or name",
+    label_search: "Search",
+    label_tier:"Tier",
+    label_round_type: "Round Type",
+    label_socket_type: "Socket Type",
     seo_title: "TFD Modules List",
     seo_description:
       "Discover the complete list of The First Descendant modules, including rarity and type. Explore detailed TFD module stats with enchant level.",
