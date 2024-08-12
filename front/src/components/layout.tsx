@@ -4,6 +4,7 @@ import Header from "./header";
 import Footer from "./footer";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
+import { StaticImage } from "gatsby-plugin-image"
 import "./layout.css";
 
 type LayoutProps = {
@@ -15,8 +16,22 @@ const Layout = ({ children }: LayoutProps) => {
     <Flex
       direction="column"
       minH="100vh"
-      backgroundImage={'url("/images/background.png")'}
+      // backgroundImage={'url("/images/background.png")'}
     >
+      <StaticImage
+        src={'../images/background.png'} // Adjust the path to your image location
+        alt="Background"
+        layout="fullWidth"
+        placeholder="blurred"
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          zIndex: -1,
+        }}
+      />
       <Header />
       <Flex
         as="main"
