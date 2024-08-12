@@ -704,7 +704,10 @@ const UserInfoPage = () => {
       </Box>
     ) : (
       <Box>
-        <Image src={`/images/module.png`} className={useInfoStyles.module_grid} />
+        <Image
+          src={`/images/module.png`}
+          className={useInfoStyles.module_grid}
+        />
         {moduleSlotIdBox(slotId)}
       </Box>
     );
@@ -730,7 +733,10 @@ const UserInfoPage = () => {
       </Box>
     ) : (
       <Box>
-        <Image src={`/images/module.png`} className={useInfoStyles.module_grid} />
+        <Image
+          src={`/images/module.png`}
+          className={useInfoStyles.module_grid}
+        />
         {moduleSlotIdBox(slotId)}
       </Box>
     );
@@ -838,13 +844,18 @@ const UserInfoPage = () => {
         {!query.get("user_name") ? (
           <>
             <Box as="form" onSubmit={handleSearch}>
-              <Flex justify="center">
+              <Flex
+                justify="center"
+                direction={{ base: "column", md: "row" }}
+                align="center"
+              >
                 <Input
                   placeholder={translations.search_placeholder}
                   value={userName || ""}
                   onChange={(e) => setUserName(e.target.value)}
-                  width="300px"
-                  mr={2}
+                  width={{ base: "100%", md: "300px" }} // Full width on small screens, 300px on medium and larger screens
+                  mr={{ base: 0, md: 2 }} // Remove right margin on small screens
+                  mb={{ base: 2, md: 0 }}
                   textColor={"white"}
                 />
                 <Button type="submit" colorScheme="gray">
