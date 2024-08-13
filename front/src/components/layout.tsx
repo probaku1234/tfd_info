@@ -1,9 +1,10 @@
 import React, { ReactNode } from "react";
-import { Flex } from "@chakra-ui/react";
+import { Flex, Box } from "@chakra-ui/react";
 import Header from "./header";
 import Footer from "./footer";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
+import { StaticImage } from "gatsby-plugin-image"
 import "./layout.css";
 
 type LayoutProps = {
@@ -17,6 +18,32 @@ const Layout = ({ children }: LayoutProps) => {
       minH="100vh"
       backgroundImage={'url("/images/background.png")'}
     >
+      {/* <Box
+        position="absolute"
+        top={0}
+        left={0}
+        width="100%"
+        height="100%"
+        zIndex={-1}
+        overflow="hidden" // Ensures the image doesn't overflow the container
+      >
+        <StaticImage
+          src="../images/background.png" // Adjust the path to your image location
+          alt="Background"
+          placeholder="blurred"
+          layout="fullWidth"
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            width: "100%",
+            height: "100%",
+            objectFit: "cover", // Ensures the image covers the container like `background-size: cover;`
+            objectPosition: "center", // Centers the image like `background-position: center;`
+            transform: "translate(-50%, -50%)", // Centers the image in the container
+          }}
+        />
+      </Box> */}
       <Header />
       <Flex
         as="main"
