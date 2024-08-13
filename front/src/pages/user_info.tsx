@@ -29,6 +29,9 @@ import {
   AlertIcon,
   AlertTitle,
   AlertDescription,
+  Stack,
+  Wrap,
+  WrapItem,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { navigate, graphql, useStaticQuery } from "gatsby";
@@ -888,25 +891,60 @@ const UserInfoPage = () => {
           </Text>
         ) : userData ? (
           <Box>
-            <HStack spacing={8}>
+            <Stack
+              direction={{ base: "column", md: "row" }} // Vertical on mobile, horizontal on desktop
+              spacing={4} // Add spacing between the items
+              align="stretch"
+            >
               {descendantBasicInfo(userData.descendant_id)}
               <Tabs>
                 <TabList>
-                  <Tab textColor={"white"}>{translations.module}</Tab>
-                  <Tab textColor={"white"}>{translations.reactor}</Tab>
-                  <Tab textColor={"white"}>
-                    {translations.external_component}
-                  </Tab>
-                  {weaponData?.map((weapon) => (
-                    <Tab key={weapon.weapon_slot_id} textColor={"white"}>
-                      {translations.weapon} {weapon.weapon_slot_id}
-                    </Tab>
-                  ))}
+                  <Wrap>
+                    <WrapItem>
+                      <Tab
+                        textColor={"white"}
+                        _selected={{ borderColor: "blue.500" }}
+                      >
+                        {translations.module}
+                      </Tab>
+                    </WrapItem>
+                    <WrapItem>
+                      <Tab
+                        textColor={"white"}
+                        _selected={{ borderColor: "blue.500" }}
+                      >
+                        {translations.reactor}
+                      </Tab>
+                    </WrapItem>
+                    <WrapItem>
+                      <Tab
+                        textColor={"white"}
+                        _selected={{ borderColor: "blue.500" }}
+                      >
+                        {translations.external_component}
+                      </Tab>
+                    </WrapItem>
+                    {weaponData?.map((weapon) => (
+                      <WrapItem>
+                        <Tab
+                          key={weapon.weapon_slot_id}
+                          textColor={"white"}
+                          _selected={{ borderColor: "blue.500" }}
+                        >
+                          {translations.weapon} {weapon.weapon_slot_id}
+                        </Tab>
+                      </WrapItem>
+                    ))}
+                  </Wrap>
                 </TabList>
 
                 <TabPanels>
                   <TabPanel>
-                    <SimpleGrid columns={6} spacing={3}>
+                    <SimpleGrid
+                      columns={{ sm: 1, md: 2, lg: 3, xl: 6 }}
+                      spacing={3}
+                      justifyContent={"center"}
+                    >
                       {descendantModuleSlotIds.map((id) => (
                         <Box
                           key={id}
@@ -1014,8 +1052,13 @@ const UserInfoPage = () => {
                       </HStack>
                     </Box>
                   </TabPanel>
+                  {/* External Component */}
                   <TabPanel>
-                    <HStack>
+                    <Stack
+                      direction={{ base: "column", md: "row" }} // Vertical on mobile, horizontal on desktop
+                      spacing={4} // Add spacing between the items
+                      align="stretch"
+                    >
                       {externalComponentData?.map((data) => (
                         <Box
                           key={data.external_component_id}
@@ -1108,23 +1151,31 @@ const UserInfoPage = () => {
                           )}
                         </Box>
                       ))}
-                    </HStack>
+                    </Stack>
                     <Divider />
                     <Box textColor={"white"} mt={2}>
                       <Heading>{translations.set_effect}</Heading>
                       {setEffectBox()}
                     </Box>
                   </TabPanel>
+                  {/* Weapon */}
                   {weaponData?.map((weapon, index) => (
                     <TabPanel key={weapon.weapon_id}>
-                      <HStack spacing={8}>
+                      <Stack
+                        direction={{ base: "column", md: "row" }}
+                        spacing={8}
+                        align={"stretch"}
+                      >
                         <Image
                           src={weapon.image_url}
                           bg={getImageBgColor(weapon.weapon_tier)}
                           alt={weapon.weapon_name}
-                          width={"50%"}
+                          width={{ base: "100%", md: "50%" }}
                         />
-                        <Box textColor={"white"} width={"50%"}>
+                        <Box
+                          textColor={"white"}
+                          width={{ base: "100%", md: "50%" }}
+                        >
                           <HStack>
                             <Box
                               alignItems={"center"}
@@ -1194,9 +1245,13 @@ const UserInfoPage = () => {
                             <></>
                           )}
                         </Box>
-                      </HStack>
+                      </Stack>
                       <Divider mb={3} />
-                      <SimpleGrid columns={5} spacing={2}>
+                      <SimpleGrid
+                        columns={{ sm: 1, md: 2, lg: 3, xl: 5 }}
+                        spacing={2}
+                        justifyContent={"center"}
+                      >
                         {weaponModuleSlotIds.map((id) => (
                           <Box
                             key={id}
@@ -1216,7 +1271,7 @@ const UserInfoPage = () => {
                   ))}
                 </TabPanels>
               </Tabs>
-            </HStack>
+            </Stack>
           </Box>
         ) : (
           <Text fontSize="xl">No user data found</Text>
