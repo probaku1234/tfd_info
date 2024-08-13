@@ -490,6 +490,8 @@ const RewardRotationPage = () => {
             columns={{ sm: 1, md: 2, xl: 5 }}
             spacing={4}
             width="100%"
+            maxHeight={'50vh'}
+            overflowY={'auto'}
           >
             {filteredRewards.length === 0 ? (
               <Text>No rewards found for this rotation.</Text>
