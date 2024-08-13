@@ -305,6 +305,7 @@ const RewardRotationPage = () => {
           flex="0 1 200px"
           overflowY="auto"
           height="fit-content"
+          display={{ base: "none", md: "flex" }} // Hide on mobile, show on larger screens
         >
           <Heading size="md">Maps</Heading>
           <Text
@@ -379,6 +380,25 @@ const RewardRotationPage = () => {
                   <option value="battle_zone_name">
                     {translations.sort_by_battle_zone}
                   </option>
+                </Select>
+              </FormControl>
+            </WrapItem>
+
+            {/* Select Dropdown for Mobile */}
+            <WrapItem display={{ base: "block", md: "none" }}>
+              <FormControl>
+                <FormLabel mb={0}>{translations.label_map}</FormLabel>
+                <Select
+                  onChange={(e) => setSelectedMap(e.target.value)}
+                  value={selectedMap || "all"}
+                  textColor="white"
+                >
+                  <option value="all">{translations.all}</option>
+                  {allRewardFilteredLocale.map((map: any) => (
+                    <option key={map.map_id} value={map.map_name}>
+                      {map.map_name}
+                    </option>
+                  ))}
                 </Select>
               </FormControl>
             </WrapItem>
@@ -490,8 +510,8 @@ const RewardRotationPage = () => {
             columns={{ sm: 1, md: 2, xl: 5 }}
             spacing={4}
             width="100%"
-            maxHeight={'50vh'}
-            overflowY={'auto'}
+            maxHeight={"50vh"}
+            overflowY={"auto"}
           >
             {filteredRewards.length === 0 ? (
               <Text>No rewards found for this rotation.</Text>
@@ -551,6 +571,7 @@ const translation: {
     special_rounds: string;
     high_power_rounds: string;
     label_sort: string;
+    label_map: string;
     label_rounds_type: string;
     label_element_type: string;
     label_arche_type: string;
@@ -586,6 +607,7 @@ const translation: {
     special_rounds: "특수탄",
     high_power_rounds: "고위력탄",
     label_sort: "정렬 유형",
+    label_map: "지역",
     label_rounds_type: "탄 유형",
     label_element_type: "속성",
     label_arche_type: "아르케 유형",
@@ -620,6 +642,7 @@ const translation: {
     special_rounds: "Special Rounds",
     high_power_rounds: "High-Power Rounds",
     label_sort: "Sort Type",
+    label_map: "Maps",
     label_rounds_type: "Rounds Type",
     label_element_type: "Element Type",
     label_arche_type: "Arche Type",
