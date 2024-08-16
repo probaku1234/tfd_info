@@ -119,9 +119,9 @@ const Header = () => {
             <Avatar name={session?.user.email} src={""} size={"sm"} />
           </MenuButton>
           <MenuList color={"black"}>
-            <MenuItem onClick={() => navigate("/user_profile")}>
+            {/* <MenuItem onClick={() => navigate("/user_profile")}>
               {translations.profile}
-            </MenuItem>
+            </MenuItem> */}
             <MenuItem onClick={signOut}>{translations.sign_out}</MenuItem>
           </MenuList>
         </Menu>
@@ -189,14 +189,14 @@ const Header = () => {
                 {session ? (
                   <>
                     <Text>{session.user.email}</Text>
-                    <Link
+                    {/* <Link
                       as={GatsbyLink}
                       to="/user_profile"
                       my={2}
                       onClick={onClose}
                     >
                       {translations.profile}
-                    </Link>
+                    </Link> */}
                     <Link as={GatsbyLink} to={window.location.pathname} my={2} onClick={() => {
                       onClose()
                       signOut()
@@ -205,7 +205,7 @@ const Header = () => {
                     </Link>
                   </>
                 ) : (
-                  <Button onClick={onOpenModal}>{translations.sign_in}</Button>
+                  <Button onClick={onOpenModal} mt={2}>{translations.sign_in}</Button>
                 )}
               </Flex>
             </DrawerBody>

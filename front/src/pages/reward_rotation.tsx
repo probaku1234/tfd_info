@@ -17,6 +17,18 @@ import {
   WrapItem,
   FormControl,
   FormLabel,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Input,
+  useDisclosure,
+  useToast,
+  List,
+  ListItem,
 } from "@chakra-ui/react";
 import { useLocation } from "@reach/router";
 import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
@@ -25,6 +37,8 @@ import LocaleContext from "../context/locale_context";
 import { MapDataWithLocale, Reward, MapData } from "../types";
 import { StaticImage } from "gatsby-plugin-image";
 import "./reward_rotation.css";
+import { supabase } from "../utils/supabaseClient";
+import { useSession } from "../context/session_context";
 
 interface AllRewardWithLocale {
   allReward: {
@@ -138,6 +152,10 @@ const RewardRotationPage = () => {
   const { locale } = localeContext!;
   const currentRotation = calculateRotationNumber(DateTime.local());
   const translations = translation[locale] || translation.en;
+  const { session } = useSession();
+  const toast = useToast();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [presetName, setPresetName] = useState("");
 
   const data: AllRewardWithLocale = useStaticQuery(graphql`
     query {
@@ -191,6 +209,10 @@ const RewardRotationPage = () => {
   const rotation =
     (currentRotation + offset) % totalRotations || totalRotations;
   const newDuration = calculateDurationBasedOnOffset(offset);
+  const [loading, setLoading] = useState(false);
+  const [modalMode, setModalMode] = useState<"save" | "load">("save");
+  const [presets, setPresets] = useState([]);
+  const [selectedPreset, setSelectedPreset] = useState(null);
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -234,6 +256,38 @@ const RewardRotationPage = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // fetch presets
+  useEffect(() => {
+    if (isOpen && session?.user.id && modalMode === 'load') {
+      setLoading(true);
+      const fetchPresets = async () => {
+        try {
+          const { data, error } = await supabase
+            .from("reward_filter_preset")
+            .select("*")
+            .eq("user_id", session.user.id);
+
+          if (error) throw error;
+          console.log(data);
+          setPresets(data);
+        } catch (error) {
+          console.error("Error fetching presets:", error);
+          toast({
+            title: "Error",
+            description: `Failed to load presets: ${error.message}`,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchPresets();
+    }
+  }, [isOpen, session?.user.id, toast]);
+
   const handleArrowClick = (isRight: boolean) => {
     if (isRight) {
       if (offset < 19) {
@@ -243,6 +297,74 @@ const RewardRotationPage = () => {
       if (offset > 0) {
         setOffset(offset - 1);
       }
+    }
+  };
+
+  const saveFilterPreset = async () => {
+    setLoading(true);
+
+    try {
+      const { data, error } = await supabase
+        .from("reward_filter_preset")
+        .insert([
+          {
+            map: selectedMap,
+            sort_by: sortBy,
+            reward_type: rewardType,
+            reactor_element_type: reactorElementType,
+            weapon_rounds_type: weaponRoundsType,
+            arche_type: archeType,
+            offset: 0,
+            user_id: session?.user.id,
+            name: presetName,
+          },
+        ])
+        .select();
+
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: "Preset Saved",
+        description: `Filter preset "${presetName}" saved successfully.`,
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+      onClose();
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Error",
+        description: `Failed to save preset: ${error.message}`,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const applyPreset = () => {
+    if (selectedPreset) {
+      setSelectedMap(selectedPreset.map || "all");
+      setSortBy(selectedPreset.sort_by || "reward_type");
+      setRewardType(selectedPreset.reward_type || "all");
+      setReactorElementType(selectedPreset.reactor_element_type || "all");
+      setWeaponRoundsType(selectedPreset.weapon_rounds_type || "all");
+      setArcheType(selectedPreset.arche_type || "all");
+
+      toast({
+        title: "Preset Applied",
+        description: `Preset "${selectedPreset.name}" applied successfully.`,
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+
+      onClose(); // Close the modal after applying the preset
     }
   };
 
@@ -364,6 +486,100 @@ const RewardRotationPage = () => {
               </Button>
             </Text>
             <Text>{`${newDuration[0].toLocaleString()} ~ ${newDuration[1].toLocaleString()}`}</Text>
+            {/* <HStack>
+              <Button isLoading={loading} onClick={() => {
+                setModalMode('save');
+                onOpen()
+              }}>
+                Save Filter Preset
+              </Button>
+              <Button onClick={() => {
+                setModalMode('load');
+                onOpen();
+              }}>Load Preset</Button>
+            </HStack> */}
+
+            <Modal isOpen={isOpen} onClose={onClose}>
+              <ModalOverlay />
+              <ModalContent>
+                {modalMode === "save" ? (
+                  <>
+                    <ModalHeader>Save Filter Preset</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                      <FormControl id="preset-name">
+                        <FormLabel>Preset Name</FormLabel>
+                        <Input
+                          value={presetName}
+                          onChange={(e) => setPresetName(e.target.value)}
+                          placeholder="Enter a name for your preset"
+                        />
+                      </FormControl>
+                    </ModalBody>
+
+                    <ModalFooter>
+                      <Button variant="ghost" onClick={onClose}>
+                        Cancel
+                      </Button>
+                      <Button
+                        colorScheme="blue"
+                        onClick={saveFilterPreset}
+                        isLoading={loading}
+                        isDisabled={!presetName} // Disable the button if the preset name is empty
+                        ml={3}
+                      >
+                        Save Preset
+                      </Button>
+                    </ModalFooter>
+                  </>
+                ) : (
+                  <>
+                    <ModalHeader>Select a Preset</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                      {loading ? (
+                        <p>Loading presets...</p>
+                      ) : presets.length > 0 ? (
+                        <List>
+                          {presets.map((preset) => (
+                            <ListItem
+                              key={preset.id}
+                              onClick={() => setSelectedPreset(preset)}
+                              style={{
+                                cursor: "pointer",
+                                backgroundColor:
+                                  selectedPreset?.id === preset.id
+                                    ? "lightgray"
+                                    : "transparent",
+                                padding: "8px",
+                                marginBottom: "4px",
+                              }}
+                            >
+                              {preset.name}
+                            </ListItem>
+                          ))}
+                        </List>
+                      ) : (
+                        <p>No presets found.</p>
+                      )}
+                    </ModalBody>
+
+                    <ModalFooter>
+                      <Button variant="ghost" onClick={onClose}>
+                        Cancel
+                      </Button>
+                      <Button
+                        colorScheme="blue"
+                        onClick={applyPreset}
+                        isDisabled={!selectedPreset}
+                      >
+                        Apply Preset
+                      </Button>
+                    </ModalFooter>
+                  </>
+                )}
+              </ModalContent>
+            </Modal>
           </Box>
           <Wrap spacing={4} width="100%">
             <WrapItem>
